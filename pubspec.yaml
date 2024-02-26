@@ -39,6 +39,7 @@ dependencies:
   popover: ^0.2.8+2
   provider: ^6.1.1
   audioplayers: ^0.20.1
+  flutter_signin_button: ^2.0.0
 
 dev_dependencies:
   flutter_test:
