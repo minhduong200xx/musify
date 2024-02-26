@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  
-  _LoginScreenState createState() => _LoginScreenState();
+class SigninScreen extends StatefulWidget {
+  _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SigninScreenState extends State<SigninScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Don\'t have an account?',
+                      'Already have an account?',
                       style: TextStyle(color: Colors.deepPurple.shade800.withOpacity(0.8)),
                     ),
                     Text(
-                      ' SIGN UP',
+                      ' Sign in',
                       style: TextStyle(
                           color: Colors.deepPurple.shade500.withOpacity(0.8),
                           fontSize: 20,
@@ -92,11 +91,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Colors.deepPurple.shade800.withOpacity(0.8)),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 40, right: 40, top: 10, bottom:10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        color: Colors.deepPurple.shade500.withOpacity(0.8),
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Icon(
+                                Icons.lock,
+                                color: Colors.deepPurple.shade800.withOpacity(0.8),
+                              ),
+                            ),
+                            Text('R E C O N F I R M  P A S S W O R D',
+                                style: TextStyle(
+                                    color: Colors.deepPurple.shade200.withOpacity(0.8)))
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -107,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Container(
                         color: Colors.deepPurple.shade800.withOpacity(0.8),
                         child: Center(
-                          child: Text('S I G N  I N',
+                          child: Text('R E G I S T E R',
                               style: TextStyle(
                                   color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold
                               )),
