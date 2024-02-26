@@ -165,6 +165,7 @@ class _CustomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> routeNames = ['/', '/favorite'];
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.deepPurple.shade800,
@@ -190,6 +191,11 @@ class _CustomNavBar extends StatelessWidget {
           label: 'Profile',
         ),
       ],
+      onTap: (index) {
+        if (index < routeNames.length) {
+          Navigator.pushNamed(context, routeNames[index]);
+        }
+      },
     );
   }
 }
@@ -204,7 +210,6 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: const Icon(Icons.grid_view_rounded),
       actions: [
         Container(
           margin: const EdgeInsets.only(right: 20),

@@ -15,13 +15,13 @@ class FavoriteSongsProvider extends ChangeNotifier {
     } else {
       _favoriteSongs.add(song);
     }
-    _applyFilter("");
+    _applyFilter(""); // Reset filter after toggle
     notifyListeners();
   }
 
   void removeFromFavorites(Song song) {
     _favoriteSongs.remove(song);
-    _applyFilter("");
+    _applyFilter(""); // Reset filter after removal
     notifyListeners();
   }
 
