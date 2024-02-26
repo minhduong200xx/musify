@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../models/song_model.dart';
