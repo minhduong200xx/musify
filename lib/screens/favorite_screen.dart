@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../models/song_model.dart';
 import '../provider/favorite_provider.dart';
 
-class SongLove extends StatelessWidget {
-  const SongLove({Key? key}) : super(key: key);
+class FavoriteSong extends StatelessWidget {
+  const FavoriteSong({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
