@@ -18,8 +18,12 @@ class PlayerButtons extends StatelessWidget {
           stream: audioPlayer.sequenceStateStream,
           builder: (context, index) {
             return IconButton(
-              onPressed:
-                  audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
+              onPressed: audioPlayer.hasPrevious
+                  ? audioPlayer.seekToPrevious
+                  : () {
+                      audioPlayer.seek(Duration.zero,
+                          index: audioPlayer.effectiveIndices!.first);
+                    },
               iconSize: 45,
               icon: const Icon(
                 Icons.skip_previous,
