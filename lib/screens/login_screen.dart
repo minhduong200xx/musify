@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  
+
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(color: Colors.deepPurple.shade800.withOpacity(0.8)),
                     ),
                     Text(
-                      ' SIGN UP',
+                      ' Sign up',
                       style: TextStyle(
                           color: Colors.deepPurple.shade500.withOpacity(0.8),
                           fontSize: 20,
@@ -40,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
+                //Email Field
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 40, right: 40, top: 20),
@@ -67,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+                // Password Field
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 40, right: 40, top: 10, bottom:10),

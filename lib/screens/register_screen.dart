@@ -39,6 +39,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     )
                   ],
                 ),
+                //Email Field
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 40, right: 40, top: 20),
@@ -66,6 +67,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                   ),
                 ),
+                //Password Field
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 40, right: 40, top: 10, bottom:10),
@@ -91,6 +93,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                   ),
                 ),
+                //Password Confirmation Field
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(left: 40, right: 40, top: 10, bottom:10),
