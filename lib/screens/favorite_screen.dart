@@ -9,6 +9,9 @@ class FavoriteSong extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<_DiscoverLoveMusicState> _discoverLoveMusicKey =
+        GlobalKey<_DiscoverLoveMusicState>();
+
     final favoriteSongs =
         Provider.of<FavoriteSongsProvider>(context).favoriteSongs.toList();
 
@@ -33,8 +36,11 @@ class FavoriteSong extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              _DiscoverLoveMusic(favoriteSongs: favoriteSongs),
-              const SizedBox(height: 30),
+              _DiscoverLoveMusic(
+                key: _discoverLoveMusicKey,
+                favoriteSongs: favoriteSongs,
+              ),
+              const SizedBox(height: 18),
               const _PlayOrShuffleSwitch(),
               const SizedBox(height: 30),
               Expanded(
@@ -47,7 +53,7 @@ class FavoriteSong extends StatelessWidget {
                           tileColor: Colors.grey[200],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(color: Colors.grey),
+                            side: const BorderSide(color: Colors.grey),
                           ),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
@@ -64,7 +70,7 @@ class FavoriteSong extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.favorite,
                                   color: Colors.deepPurple,
                                 ),
@@ -73,10 +79,17 @@ class FavoriteSong extends StatelessWidget {
                                           listen: false)
                                       .removeFromFavorites(
                                           favoriteSongs[index]);
+                                  _DiscoverLoveMusicState?
+                                      _discoverLoveMusicState =
+                                      _discoverLoveMusicKey.currentState;
+                                  if (_discoverLoveMusicState != null) {
+                                    _discoverLoveMusicState
+                                        ._updateFilteredSongs();
+                                  }
                                 },
                               ),
                               IconButton(
-                                icon: Icon(Icons.play_circle,
+                                icon: const Icon(Icons.play_circle,
                                     size: 30, color: Colors.deepPurple),
                                 onPressed: () {
                                   Get.toNamed('/song',
@@ -86,7 +99,7 @@ class FavoriteSong extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ],
                     );
                   },
@@ -135,6 +148,17 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
     });
   }
 
+  void _updateFilteredSongs() {
+    setState(() {
+      _filteredSongs = widget.favoriteSongs.where((song) {
+        final title = song.title.toLowerCase();
+        final artist = song.artist.toLowerCase();
+        final searchLower = _searchController.text.toLowerCase();
+        return title.contains(searchLower) || artist.contains(searchLower);
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -151,7 +175,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                   ),
                   child: TextFormField(
                     controller: _searchController,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     onChanged: _filterSongs,
                     decoration: InputDecoration(
                       isDense: true,
@@ -161,7 +185,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                           Theme.of(context).textTheme.bodyMedium!.copyWith(
                                 color: Colors.white.withOpacity(0.7),
                               ),
-                      prefixIcon: Icon(Icons.search, color: Colors.white),
+                      prefixIcon: const Icon(Icons.search, color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15.0),
                         borderSide: BorderSide.none,
@@ -176,7 +200,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                 color: Colors.deepPurple[400],
                 icon: const Icon(Icons.filter_list, color: Colors.white),
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                  PopupMenuItem<int>(
+                  const PopupMenuItem<int>(
                     value: 0,
                     child: Text(
                       'Sắp xếp theo',
@@ -194,9 +218,9 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                                   ? Colors.green
                                   : Colors.white,
                             )),
-                        Spacer(),
+                        const Spacer(),
                         if (selectedValue == 1)
-                          Icon(Icons.check, color: Colors.green),
+                          const Icon(Icons.check, color: Colors.green),
                       ],
                     ),
                   ),
@@ -210,9 +234,9 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                                   ? Colors.green
                                   : Colors.white,
                             )),
-                        Spacer(),
+                        const Spacer(),
                         if (selectedValue == 2)
-                          Icon(Icons.check, color: Colors.green),
+                          const Icon(Icons.check, color: Colors.green),
                       ],
                     ),
                   ),
@@ -228,7 +252,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                             )),
                         Spacer(),
                         if (selectedValue == 3)
-                          Icon(Icons.check, color: Colors.green),
+                          const Icon(Icons.check, color: Colors.green),
                       ],
                     ),
                   ),
@@ -242,9 +266,9 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
                                   ? Colors.green
                                   : Colors.white,
                             )),
-                        Spacer(),
+                        const Spacer(),
                         if (selectedValue == 4)
-                          Icon(Icons.check, color: Colors.green),
+                          const Icon(Icons.check, color: Colors.green),
                       ],
                     ),
                   ),
@@ -260,7 +284,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
           const SizedBox(height: 20),
           Text(
             'Bài hát ưa thích',
-            style: Theme.of(context).textTheme.headline6!.copyWith(
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -287,87 +311,52 @@ class _PlayOrShuffleSwitch extends StatefulWidget {
 }
 
 class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
-  bool isPlay = true;
+  bool isPlaying = false;
+  bool isShuffleMode = false;
+  bool isLoopMode = false;
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          isPlay = !isPlay;
-        });
-      },
-      child: Container(
-        height: 50,
-        width: width,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              left: isPlay ? 0 : width * 0.45,
-              child: Container(
-                height: 50,
-                width: width * 0.45,
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple.shade400,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Play',
-                          style: TextStyle(
-                            color: isPlay ? Colors.white : Colors.deepPurple,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.play_circle,
-                        color: isPlay ? Colors.white : Colors.deepPurple,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Shuffle',
-                          style: TextStyle(
-                            color: isPlay ? Colors.deepPurple : Colors.white,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.shuffle,
-                        color: isPlay ? Colors.deepPurple : Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return Container(
+      alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: isPlaying
+                ? const Icon(Icons.pause_circle)
+                : const Icon(Icons.play_circle),
+            iconSize: 60,
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                isPlaying = !isPlaying;
+              });
+            },
+          ),
+          const SizedBox(width: 5),
+          IconButton(
+            icon: isShuffleMode
+                ? const Icon(Icons.shuffle)
+                : isLoopMode
+                    ? const Icon(Icons.repeat_one)
+                    : const Icon(Icons.repeat),
+            iconSize: 30,
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                if (isShuffleMode) {
+                  isShuffleMode = false;
+                  isLoopMode = true;
+                } else if (isLoopMode) {
+                  isLoopMode = false;
+                } else {
+                  isShuffleMode = true;
+                }
+              });
+            },
+          ),
+        ],
       ),
     );
   }

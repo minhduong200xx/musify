@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
 
 import '../models/playlist_model.dart';
 import '../models/song_model.dart';
@@ -26,6 +27,7 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: const _CustomAppBar(),
+        drawer: MyDrawer(),
         bottomNavigationBar: const _CustomNavBar(),
         body: SingleChildScrollView(
           child: Column(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
-
+import 'package:provider/provider.dart';
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
+import 'favorite_screen.dart';
 
 class SongScreen extends StatefulWidget {
   const SongScreen({Key? key}) : super(key: key);
@@ -16,11 +18,14 @@ class SongScreen extends StatefulWidget {
 class _SongScreenState extends State<SongScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   Song song = Get.arguments ?? Song.songs[0];
-
+  bool isFavorite = false;
+  bool isRepeatOne = false;
+  FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
   @override
   void initState() {
     super.initState();
-
+    _favoriteSongsProvider =
+        Provider.of<FavoriteSongsProvider>(context, listen: false);
     audioPlayer.setAudioSource(
       ConcatenatingAudioSource(
         children: [
@@ -52,10 +57,80 @@ class _SongScreenState extends State<SongScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isFavorite = Provider.of<FavoriteSongsProvider>(context)
+        .favoriteSongs
+        .contains(song);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(Icons.favorite,
+                                  color: isFavorite
+                                      ? Colors.deepPurple[200]
+                                      : Colors.black),
+                              title: const Text('Thích'),
+                              onTap: () {
+                                _favoriteSongsProvider.toggleFavorite(song);
+                                Navigator.pop(context);
+                                setState(() {});
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.share),
+                              title: const Text('Chia sẻ'),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.music_note),
+                              title: const Text('Xem bản nhạc'),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.person),
+                              title: const Text('Xem nghệ sĩ'),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.album),
+                              title: const Text('Xem album'),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: const Icon(Icons.more_vert),
+            ),
+          ),
+        ],
       ),
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -70,6 +145,22 @@ class _SongScreenState extends State<SongScreen> {
             song: song,
             seekBarDataStream: _seekBarDataStream,
             audioPlayer: audioPlayer,
+            isFavorite: isFavorite,
+            isRepeatOne:
+                isRepeatOne, // Truyền giá trị của isRepeatOne vào _MusicPlayer
+            onFavoritePressed: () {
+              _favoriteSongsProvider.toggleFavorite(song);
+            },
+            onRepeatPressed: () {
+              // Thêm hàm xử lý khi người dùng nhấn vào nút repeat
+              setState(() {
+                isRepeatOne =
+                    !isRepeatOne; // Đảo ngược trạng thái của isRepeatOne
+              });
+              // Cập nhật chế độ phát lại của audioPlayer
+              audioPlayer
+                  .setLoopMode(isRepeatOne ? LoopMode.one : LoopMode.off);
+            },
           ),
         ],
       ),
@@ -83,12 +174,20 @@ class _MusicPlayer extends StatelessWidget {
     required this.song,
     required Stream<SeekBarData> seekBarDataStream,
     required this.audioPlayer,
+    required this.isFavorite,
+    required this.isRepeatOne,
+    required this.onFavoritePressed,
+    required this.onRepeatPressed,
   })  : _seekBarDataStream = seekBarDataStream,
         super(key: key);
 
   final Song song;
   final Stream<SeekBarData> _seekBarDataStream;
   final AudioPlayer audioPlayer;
+  final bool isFavorite;
+  final bool isRepeatOne;
+  final VoidCallback onFavoritePressed;
+  final VoidCallback onRepeatPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -101,21 +200,47 @@ class _MusicPlayer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            song.title,
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    song.title,
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    child: Text(
+                      song.description,
+                      maxLines: 2,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: FloatingActionButton(
+                  onPressed: onFavoritePressed,
+                  child: Consumer<FavoriteSongsProvider>(
+                    builder: (context, provider, _) {
+                      final isFavorite = provider.favoriteSongs.contains(song);
+                      return Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                      );
+                    },
+                  ),
                 ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            song.description,
-            maxLines: 2,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall!
-                .copyWith(color: Colors.white),
+              ),
+            ],
           ),
           const SizedBox(height: 30),
           StreamBuilder<SeekBarData>(
@@ -129,24 +254,25 @@ class _MusicPlayer extends StatelessWidget {
               );
             },
           ),
-          PlayerButtons(audioPlayer: audioPlayer),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                iconSize: 35,
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                ),
+              const Icon(
+                Icons.shuffle,
+                color: Colors.white,
+                size: 30,
               ),
-              IconButton(
-                iconSize: 35,
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.cloud_download,
+              const Spacer(),
+              PlayerButtons(audioPlayer: audioPlayer),
+              const Spacer(),
+              GestureDetector(
+                onTap:
+                    onRepeatPressed, // Sử dụng hàm xử lý khi người dùng nhấn vào nút repeat
+                child: Icon(
+                  isRepeatOne
+                      ? Icons.repeat_one
+                      : Icons
+                          .repeat, // Thay đổi biểu tượng dựa trên trạng thái của isRepeatOne
+                  size: 30,
                   color: Colors.white,
                 ),
               ),
