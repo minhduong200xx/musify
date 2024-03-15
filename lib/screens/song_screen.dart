@@ -6,7 +6,6 @@ import 'package:rxdart/rxdart.dart' as rxdart;
 import 'package:provider/provider.dart';
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
-import 'favorite_screen.dart';
 
 class SongScreen extends StatefulWidget {
   const SongScreen({Key? key}) : super(key: key);
@@ -146,18 +145,15 @@ class _SongScreenState extends State<SongScreen> {
             seekBarDataStream: _seekBarDataStream,
             audioPlayer: audioPlayer,
             isFavorite: isFavorite,
-            isRepeatOne:
-                isRepeatOne, // Truyền giá trị của isRepeatOne vào _MusicPlayer
+            isRepeatOne: isRepeatOne,
             onFavoritePressed: () {
               _favoriteSongsProvider.toggleFavorite(song);
             },
             onRepeatPressed: () {
-              // Thêm hàm xử lý khi người dùng nhấn vào nút repeat
               setState(() {
-                isRepeatOne =
-                    !isRepeatOne; // Đảo ngược trạng thái của isRepeatOne
+                isRepeatOne = !isRepeatOne;
               });
-              // Cập nhật chế độ phát lại của audioPlayer
+
               audioPlayer
                   .setLoopMode(isRepeatOne ? LoopMode.one : LoopMode.off);
             },

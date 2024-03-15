@@ -11,7 +11,6 @@ class MyDrawer extends StatelessWidget {
       backgroundColor: Colors.deepPurple,
       child: Column(
         children: [
-          // header
           const DrawerHeader(
             child: Icon(
               Icons.person,
@@ -29,30 +28,22 @@ class MyDrawer extends StatelessWidget {
           MyListTile(
             icon: Icons.logout,
             text: "ĐĂNG XUẤT",
-            onTap: () {
-              // Thực hiện hành động khi nút "ĐĂNG XUẤT" được nhấp
-            },
+            onTap: () {},
           ),
           MyListTile(
             icon: Icons.support_agent,
             text: "HỖ TRỢ",
-            onTap: () {
-              // Thực hiện hành động khi nút "HỖ TRỢ" được nhấp
-            },
+            onTap: () {},
           ),
           MyListTile(
             icon: Icons.verified_user,
             text: "QUYỀN RIÊNG TƯ",
-            onTap: () {
-              // Thực hiện hành động khi nút "QUYỀN RIÊNG TƯ" được nhấp
-            },
+            onTap: () {},
           ),
           MyListTile(
             icon: Icons.gavel,
             text: "ĐIỀU KHOẢN",
-            onTap: () {
-              // Thực hiện hành động khi nút "ĐIỀU KHOẢN" được nhấp
-            },
+            onTap: () {},
           ),
         ],
       ),
