@@ -110,6 +110,7 @@ class _SongScreenState extends State<SongScreen> {
                               title: const Text('Xem nghệ sĩ'),
                               onTap: () {
                                 Navigator.pop(context);
+                                Get.toNamed('/auth');
                               },
                             ),
                             ListTile(
@@ -261,13 +262,9 @@ class _MusicPlayer extends StatelessWidget {
               PlayerButtons(audioPlayer: audioPlayer),
               const Spacer(),
               GestureDetector(
-                onTap:
-                    onRepeatPressed, // Sử dụng hàm xử lý khi người dùng nhấn vào nút repeat
+                onTap: onRepeatPressed,
                 child: Icon(
-                  isRepeatOne
-                      ? Icons.repeat_one
-                      : Icons
-                          .repeat, // Thay đổi biểu tượng dựa trên trạng thái của isRepeatOne
+                  isRepeatOne ? Icons.repeat_one : Icons.repeat,
                   size: 30,
                   color: Colors.white,
                 ),
