@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
+import 'package:get/get.dart';
 
 import '../models/playlist_model.dart';
 import '../models/song_model.dart';
@@ -215,9 +217,21 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Container(
           margin: const EdgeInsets.only(right: 20),
-          child: const CircleAvatar(
-            backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1659025435463-a039676b45a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
+          child: TextButton(
+            // Use TextButton for clickable behavior
+            onPressed: () {
+              // Navigate to login/register screen (using your chosen navigation method)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        LoginPage()), // Replace with your login screen widget
+              );
+            },
+            child: const CircleAvatar(
+              backgroundImage: NetworkImage(
+                'https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonduck.com%2Ficons%2F313107%2Favatar-default&psig=AOvVaw2_wgTkuDRMA-3dE8pLe1RR&ust=1711536771095000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPjWwbvhkYUDFQAAAAAdAAAAABBZ',
+              ), // Adjust text color as needed
             ),
           ),
         ),

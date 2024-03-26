@@ -1,359 +1,121 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_music_app_ui/models/song_model.dart';
-import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
-class AuthScreen extends StatelessWidget {
-  const AuthScreen({Key? key}) : super(key: key);
+class Authentication {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Email/Password Login
+  Future<UserCredential?> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      // Handle errors (e.g., user not found, wrong password)
+      print(e.code);
+      print(e.message);
+      return null;
+    }
+  }
+
+  // Google Sign In (replace with your actual implementation)
+  Future<UserCredential?> signInWithGoogle() async {
+    // Implement Google Sign In using a suitable plugin
+    print('Google sign in not implemented yet');
+    return null;
+  }
+
+  // Facebook Sign In (replace with your actual implementation)
+  Future<UserCredential?> signInWithFacebook() async {
+    // Implement Facebook Sign In using a suitable plugin
+    print('Facebook sign in not implemented yet');
+    return null;
+  }
+}
+
+class AuthenticationScreen extends StatefulWidget {
+  @override
+  _AuthenticationScreenState createState() => _AuthenticationScreenState();
+}
+
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  final Authentication _auth =
+      Authentication(); // Instance of the Authentication class
+  final _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
+  bool _isLoading = false; // Flag to indicate loading state
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Authentication'),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _BackgroundImgAuth(),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text('990 N người nghe hàng tháng'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 1,
-                    ),
-                    Row(
-                      children: [
-                        _FollowAndMore(),
-                        Spacer(),
-                        _PlayOrShuffleSwitch(),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    _PopularOfAuth(
-                      songs: Song.songs,
-                    ),
-                  ],
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Email',
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BackgroundImgAuth extends StatefulWidget {
-  const _BackgroundImgAuth({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_BackgroundImgAuth> createState() => _BackgroundImgAuthState();
-}
-
-class _BackgroundImgAuthState extends State<_BackgroundImgAuth> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          Image.asset(
-            'assets/images/auth.jpg',
-            fit: BoxFit.cover,
-            height: 250,
-            width: double.infinity,
-          ),
-          Positioned(
-            top: 8,
-            left: 5,
-            child: IconButton(
-              iconSize: 20,
-              icon: const Icon(Icons.arrow_back_ios_new),
-              color: Colors.white,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          const Positioned(
-            bottom: 15,
-            left: 20,
-            child: Text(
-              'Phương Ly',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlayOrShuffleSwitch extends StatefulWidget {
-  const _PlayOrShuffleSwitch({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_PlayOrShuffleSwitch> createState() => _PlayOrShuffleSwitchState();
-}
-
-class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
-  bool isPlaying = false;
-  bool isShuffleMode = false;
-  bool isLoopMode = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          IconButton(
-            icon: isShuffleMode
-                ? const Icon(Icons.shuffle)
-                : isLoopMode
-                    ? const Icon(Icons.repeat_one)
-                    : const Icon(Icons.repeat),
-            iconSize: 25,
-            color: Colors.white,
-            onPressed: () {
-              setState(() {
-                if (isShuffleMode) {
-                  isShuffleMode = false;
-                  isLoopMode = true;
-                } else if (isLoopMode) {
-                  isLoopMode = false;
-                } else {
-                  isShuffleMode = true;
-                }
-              });
-            },
-          ),
-          const SizedBox(width: 5),
-          IconButton(
-            icon: isPlaying
-                ? const Icon(Icons.pause_circle)
-                : const Icon(Icons.play_circle),
-            iconSize: 50,
-            color: Colors.white,
-            onPressed: () {
-              setState(() {
-                isPlaying = !isPlaying;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FollowAndMore extends StatefulWidget {
-  const _FollowAndMore({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_FollowAndMore> createState() => _FollowAndMoreState();
-}
-
-class _FollowAndMoreState extends State<_FollowAndMore> {
-  bool isFollowing = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: Row(
-        children: [
-          OutlinedButton(
-            style: ButtonStyle(
-              side: MaterialStateProperty.resolveWith<BorderSide>(
-                (Set<MaterialState> states) {
-                  return BorderSide(
-                    color: isFollowing ? Colors.white : Colors.white,
-                    width: 1,
-                  );
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
                 },
+                onSaved: (value) => _email = value!,
               ),
-            ),
-            onPressed: () {
-              setState(() {
-                isFollowing = !isFollowing;
-              });
-            },
-            child: Text(
-              isFollowing ? 'Theo dõi' : 'Đang theo dõi',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          const Icon(
-            Icons.more_vert,
-            color: Colors.white,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PopularOfAuth extends StatefulWidget {
-  const _PopularOfAuth({
-    Key? key,
-    required this.songs,
-  }) : super(key: key);
-  final List<Song> songs;
-
-  @override
-  State<_PopularOfAuth> createState() => _PopularOfAuthState();
-}
-
-class _PopularOfAuthState extends State<_PopularOfAuth> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                'Phổ biến',
-                style: TextStyle(fontSize: 18.0),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+                obscureText: true,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your password.';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _password = value!,
               ),
+              const SizedBox(height: 20.0),
+              _isLoading
+                  ? const CircularProgressIndicator() // Display progress indicator during login
+                  : ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true; // Set loading state to true
+                          });
+                          _formKey.currentState!.save();
+                          final userCredential = await _auth
+                              .signInWithEmailAndPassword(_email, _password);
+                          setState(() {
+                            _isLoading =
+                                false; // Reset loading state after login
+                          });
+                          if (userCredential != null) {
+                            // Handle successful login (e.g., navigate to home screen)
+                            print('Login successful!');
+                          } else {
+                            // Handle failed login (display error message)
+                          }
+                        }
+                      },
+                      child: const Text('Login'),
+                    ),
             ],
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 20),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.songs.length,
-            itemBuilder: ((context, index) {
-              return SongCard(song: widget.songs[index]);
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SongCard extends StatelessWidget {
-  const SongCard({
-    Key? key,
-    required this.song,
-  }) : super(key: key);
-
-  final Song song;
-
-  @override
-  Widget build(BuildContext context) {
-    final isFavorite = Provider.of<FavoriteSongsProvider>(context)
-        .favoriteSongs
-        .contains(song);
-    return InkWell(
-      onTap: () {
-        Get.toNamed('/song', arguments: song);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              height: 75,
-              margin: const EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image.network(
-                      song.coverUrl,
-                      height: 50,
-                      width: 50,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          song.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '${song.listens} ',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isFavorite)
-                    IconButton(
-                      onPressed: () {
-                        final provider = Provider.of<FavoriteSongsProvider>(
-                            context,
-                            listen: false);
-                        provider.removeFromFavorites(song);
-                      },
-                      icon: Icon(
-                        Icons.favorite,
-                        color: Colors.deepPurple[400],
-                      ),
-                    ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );
