@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
@@ -12,35 +14,59 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Song> songs = Song.songs;
-    List<Playlist> playlists = Playlist.playlists;
+    return FutureBuilder<List<Song>>(
+      future: fetchSongs(),
+      builder: (context, songSnapshot) {
+        if (songSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Placeholder widget while loading
+        }
+        if (songSnapshot.hasError) {
+          return Text('Error: ${songSnapshot.error}'); // Error handling
+        }
+        List<Song> songs = songSnapshot.data ?? []; // Extracted song list
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8),
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: const _CustomAppBar(),
-        drawer: MyDrawer(),
-        bottomNavigationBar: const _CustomNavBar(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const _DiscoverMusic(),
-              _TrendingMusic(songs: songs),
-              _PlaylistMusic(playlists: playlists),
-            ],
-          ),
-        ),
-      ),
+        return FutureBuilder<List<Playlist>>(
+          future: Playlist.createPlaylists(),
+          builder: (context, playlistSnapshot) {
+            if (playlistSnapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Placeholder widget while loading
+            }
+            if (playlistSnapshot.hasError) {
+              return Text('Error: ${playlistSnapshot.error}'); // Error handling
+            }
+            List<Playlist> playlists =
+                playlistSnapshot.data ?? []; // Extracted playlist list
+
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.deepPurple.shade800.withOpacity(0.8),
+                    Colors.deepPurple.shade200.withOpacity(0.8),
+                  ],
+                ),
+              ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: const _CustomAppBar(),
+                drawer: MyDrawer(),
+                bottomNavigationBar: const _CustomNavBar(),
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const _DiscoverMusic(),
+                      _TrendingMusic(songs: songs),
+                      _PlaylistMusic(playlists: playlists),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -121,14 +147,27 @@ class _DiscoverMusic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String _name;
+    final user = FirebaseAuth.instance.currentUser;
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Welcome',
-            style: Theme.of(context).textTheme.bodyLarge,
+          Row(
+            children: [
+              Text(
+                'Welcome ',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              Text(
+                '${user?.email ?? ""}',
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
           Text(

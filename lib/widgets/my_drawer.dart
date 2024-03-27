@@ -1,8 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/widgets/my_list_tile.dart';
 
-class MyDrawer extends StatelessWidget {
-  const MyDrawer({Key? key});
+class MyDrawer extends StatefulWidget {
+  @override
+  _MyDrawerState createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  final _auth = FirebaseAuth.instance;
+  Future<void> _signOut() async {
+    try {
+      await _auth.signOut();
+      Navigator.pushNamed(context, '/');
+    } catch (e) {
+      print('Error signing out: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,29 +34,39 @@ class MyDrawer extends StatelessWidget {
           ),
           MyListTile(
             icon: Icons.account_circle,
-            text: 'HỒ SƠ',
+            text: 'Profile',
             onTap: () {
               Navigator.pushNamed(context, '/profile');
             },
           ),
           MyListTile(
-            icon: Icons.logout,
-            text: "ĐĂNG XUẤT",
-            onTap: () {},
+            icon: FirebaseAuth.instance.currentUser != null
+                ? Icons.logout
+                : Icons.login,
+            text: FirebaseAuth.instance.currentUser != null
+                ? "Sign Out"
+                : "Sign In",
+            onTap: () {
+              if (FirebaseAuth.instance.currentUser != null) {
+                _signOut(); // Call sign out function if user is logged in
+              } else {
+                Navigator.pushNamed(context, '/login');
+              }
+            },
           ),
           MyListTile(
             icon: Icons.support_agent,
-            text: "HỖ TRỢ",
+            text: "Support",
             onTap: () {},
           ),
           MyListTile(
             icon: Icons.verified_user,
-            text: "QUYỀN RIÊNG TƯ",
+            text: "Privacy",
             onTap: () {},
           ),
           MyListTile(
             icon: Icons.gavel,
-            text: "ĐIỀU KHOẢN",
+            text: "Rules",
             onTap: () {},
           ),
         ],

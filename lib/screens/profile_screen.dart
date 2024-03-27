@@ -43,6 +43,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         Text(
                           user.displayName ??
+                              user.email ??
                               'No Name', // Display name if available, otherwise "No Name"
                           style: const TextStyle(
                             color: Colors.white,

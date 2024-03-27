@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'song_model.dart';
 
 class Playlist {
@@ -11,24 +12,53 @@ class Playlist {
     required this.imageUrl,
   });
 
-  static List<Playlist> playlists = [
-    Playlist(
-      title: 'Hip-hop R&B Mix',
-      songs: Song.songs,
-      imageUrl:
-          'https://images.unsplash.com/photo-1576525865260-9f0e7cfb02b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80',
-    ),
-    Playlist(
-      title: 'Rock & Roll',
-      songs: Song.songs,
-      imageUrl:
-          'https://images.unsplash.com/photo-1629276301820-0f3eedc29fd0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2848&q=80',
-    ),
-    Playlist(
-      title: 'Techno',
-      songs: Song.songs,
-      imageUrl:
-          'https://images.unsplash.com/photo-1594623930572-300a3011d9ae?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80',
-    )
-  ];
+  // Method to fetch songs from Firestore
+  static Future<List<Song>> getAllSongsFromFirestore() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('songs').get();
+    List<Song> songs =
+        querySnapshot.docs.map((doc) => Song.fromFirestore(doc)).toList();
+    return songs;
+  }
+
+  // Method to fetch playlists from Firestore
+  static Future<List<Playlist>> getPlaylistsFromFirestore() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('playlists').get();
+    List<Playlist> playlists = querySnapshot.docs
+        .map(
+            (doc) => Playlist.fromFirestore(doc.data() as Map<String, dynamic>))
+        .toList();
+    return playlists;
+  }
+
+  // Method to create playlists based on fetched data
+  static Future<List<Playlist>> createPlaylists() async {
+    List<Playlist> playlists = [];
+    List<Playlist> fetchedPlaylists = await getPlaylistsFromFirestore();
+
+    for (Playlist playlist in fetchedPlaylists) {
+      List<Song> songs = await getAllSongsFromFirestore();
+      List<Song> filteredSongs = songs
+          .where((song) => song.playlist.contains(playlist.title))
+          .toList();
+      Playlist newPlaylist = Playlist(
+        title: playlist.title,
+        songs: filteredSongs,
+        imageUrl: playlist.imageUrl,
+      );
+      playlists.add(newPlaylist);
+    }
+
+    return playlists;
+  }
+
+  // Factory method to create Playlist object from Firestore data
+  factory Playlist.fromFirestore(Map<String, dynamic> data) {
+    return Playlist(
+      title: data['title'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      songs: [], // Initially, songs are empty and will be fetched later
+    );
+  }
 }

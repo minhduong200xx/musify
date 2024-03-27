@@ -16,7 +16,7 @@ class SongScreen extends StatefulWidget {
 
 class _SongScreenState extends State<SongScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
-  Song song = Get.arguments ?? Song.songs[0];
+  Song song = Get.arguments ?? fetchSongs();
   bool isFavorite = false;
   bool isRepeatOne = false;
   FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
@@ -29,7 +29,7 @@ class _SongScreenState extends State<SongScreen> {
       ConcatenatingAudioSource(
         children: [
           AudioSource.uri(
-            Uri.parse('asset:///${song.url}'),
+            Uri.parse('asset:///${song.audioUrl}'),
           ),
         ],
       ),
@@ -137,7 +137,7 @@ class _SongScreenState extends State<SongScreen> {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            song.coverUrl,
+            song.coverImageUrl,
             fit: BoxFit.cover,
           ),
           const _BackgroundFilter(),
@@ -212,7 +212,7 @@ class _MusicPlayer extends StatelessWidget {
                   const SizedBox(height: 10),
                   Container(
                     child: Text(
-                      song.description,
+                      song.artist,
                       maxLines: 2,
                       style: Theme.of(context)
                           .textTheme

@@ -58,14 +58,14 @@ class FavoriteSong extends StatelessWidget {
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
                             child: Image.network(
-                              favoriteSongs[index].coverUrl,
+                              favoriteSongs[index].coverImageUrl,
                               height: 50,
                               width: 50,
                               fit: BoxFit.cover,
                             ),
                           ),
                           title: Text(favoriteSongs[index].title),
-                          subtitle: Text(favoriteSongs[index].description),
+                          subtitle: Text(favoriteSongs[index].artist),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
