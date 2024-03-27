@@ -40,9 +40,9 @@ class FavoriteSong extends StatelessWidget {
                 key: _discoverLoveMusicKey,
                 favoriteSongs: favoriteSongs,
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 10),
               const _PlayOrShuffleSwitch(),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
                   itemCount: favoriteSongs.length,
@@ -358,6 +358,48 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CustomNavBar extends StatelessWidget {
+  const _CustomNavBar({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> routeNames = ['/', '/favorite', '/song', 'library'];
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.deepPurple.shade800,
+      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.white,
+      showUnselectedLabels: false,
+      showSelectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.favorite_outline),
+          label: 'Favorites',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.play_circle_outline),
+          label: 'Play',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people_outline),
+          label: 'Profile',
+        ),
+      ],
+      onTap: (index) {
+        if (index < routeNames.length) {
+          Navigator.pushNamed(context, routeNames[index]);
+        }
+      },
     );
   }
 }

@@ -11,6 +11,13 @@ class SongCard extends StatelessWidget {
 
   final Song song;
 
+  String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -50,14 +57,14 @@ class SongCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        song.title,
+                        truncateText(song.title, 10),
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.deepPurple,
                               fontWeight: FontWeight.bold,
                             ),
                       ),
                       Text(
-                        song.description,
+                        truncateText(song.description, 15),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

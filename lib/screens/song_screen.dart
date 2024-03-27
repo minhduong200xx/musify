@@ -100,7 +100,7 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.music_note),
-                              title: const Text('Xem bản nhạc'),
+                              title: const Text('Thêm vào playlist'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -110,7 +110,7 @@ class _SongScreenState extends State<SongScreen> {
                               title: const Text('Xem nghệ sĩ'),
                               onTap: () {
                                 Navigator.pop(context);
-                                Get.toNamed('/auth');
+                                Get.toNamed('/auth', arguments: song.artist);
                               },
                             ),
                             ListTile(
@@ -201,6 +201,7 @@ class _MusicPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     song.title,
@@ -210,32 +211,32 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    child: Text(
-                      song.description,
-                      maxLines: 2,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
-                    ),
+                  Text(
+                    song.description,
+                    maxLines: 2,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: Colors.white),
                   ),
                 ],
               ),
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: FloatingActionButton(
-                  onPressed: onFavoritePressed,
-                  child: Consumer<FavoriteSongsProvider>(
-                    builder: (context, provider, _) {
-                      final isFavorite = provider.favoriteSongs.contains(song);
-                      return Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                      );
-                    },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    onPressed: onFavoritePressed,
+                    child: Consumer<FavoriteSongsProvider>(
+                      builder: (context, provider, _) {
+                        final isFavorite =
+                            provider.favoriteSongs.contains(song);
+                        return Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                        );
+                      },
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

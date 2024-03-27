@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/screens/favorite_screen.dart';
+import 'package:flutter_music_app_ui/screens/library_screen.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'provider/favorite_provider.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/favorite', page: () => const FavoriteSong()),
         GetPage(name: '/profile', page: () => const ProfileScreen()),
         GetPage(name: '/auth', page: () => const AuthScreen()),
+        GetPage(name: '/library', page: () => const LibraryScreen()),
       ],
     );
   }

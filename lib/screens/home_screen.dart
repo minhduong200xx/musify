@@ -167,7 +167,7 @@ class _CustomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> routeNames = ['/', '/favorite'];
+    final List<String> routeNames = ['/', '/favorite', '/song', 'library'];
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.deepPurple.shade800,

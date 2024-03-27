@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_music_app_ui/models/auth_model.dart';
 import 'package:flutter_music_app_ui/models/song_model.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,10 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Auth.findArtistByName('Artist Name 1');
+    final artistSongs =
+        Song.songs.where((song) => song.artist == 'Artist Name 1').toList();
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -27,7 +32,8 @@ class AuthScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _BackgroundImgAuth(),
+              _BackgroundImgAuth(
+                  bgUrl: auth?.bgUrl ?? '', artistName: auth?.name ?? ''),
               SizedBox(
                 height: 10,
               ),
@@ -37,11 +43,9 @@ class AuthScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text('990 N người nghe hàng tháng'),
+                        Text(
+                            '${auth?.listenCount ?? 0} N người nghe hàng tháng'),
                       ],
-                    ),
-                    SizedBox(
-                      height: 1,
                     ),
                     Row(
                       children: [
@@ -50,12 +54,7 @@ class AuthScreen extends StatelessWidget {
                         _PlayOrShuffleSwitch(),
                       ],
                     ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    _PopularOfAuth(
-                      songs: Song.songs,
-                    ),
+                    _PopularOfAuth(artistSongs: artistSongs),
                   ],
                 ),
               )
@@ -70,7 +69,12 @@ class AuthScreen extends StatelessWidget {
 class _BackgroundImgAuth extends StatefulWidget {
   const _BackgroundImgAuth({
     Key? key,
+    required this.bgUrl,
+    required this.artistName, // Thêm trường dữ liệu để nhận tên nghệ sĩ
   }) : super(key: key);
+
+  final String bgUrl;
+  final String artistName; // Định nghĩa trường dữ liệu để nhận tên nghệ sĩ
 
   @override
   State<_BackgroundImgAuth> createState() => _BackgroundImgAuthState();
@@ -83,7 +87,7 @@ class _BackgroundImgAuthState extends State<_BackgroundImgAuth> {
       child: Stack(
         children: [
           Image.asset(
-            'assets/images/auth.jpg',
+            widget.bgUrl,
             fit: BoxFit.cover,
             height: 250,
             width: double.infinity,
@@ -100,11 +104,11 @@ class _BackgroundImgAuthState extends State<_BackgroundImgAuth> {
               },
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 15,
             left: 20,
             child: Text(
-              'Phương Ly',
+              widget.artistName, // Sử dụng tên nghệ sĩ từ trường dữ liệu
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -220,9 +224,88 @@ class _FollowAndMoreState extends State<_FollowAndMore> {
           const SizedBox(
             width: 20,
           ),
-          const Icon(
-            Icons.more_vert,
-            color: Colors.white,
+          GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    color: Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            title: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/auth.jpg'),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Phương Ly',
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Divider(
+                            color: Colors.grey,
+                            height: 0,
+                            thickness: 1,
+                            indent: 16,
+                            endIndent: 16,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.person_add),
+                            title: const Text('Theo dõi'),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.do_not_disturb_on),
+                            title:
+                                const Text('Không phát nhạc của nghệ sĩ này'),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.share),
+                            title: const Text('Chia sẻ'),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.report),
+                            title: const Text('Báo cáo'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Get.toNamed('/auth');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: const Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -233,9 +316,10 @@ class _FollowAndMoreState extends State<_FollowAndMore> {
 class _PopularOfAuth extends StatefulWidget {
   const _PopularOfAuth({
     Key? key,
-    required this.songs,
+    required this.artistSongs,
   }) : super(key: key);
-  final List<Song> songs;
+
+  final List<Song> artistSongs;
 
   @override
   State<_PopularOfAuth> createState() => _PopularOfAuthState();
@@ -257,11 +341,11 @@ class _PopularOfAuthState extends State<_PopularOfAuth> {
           ),
           ListView.builder(
             shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 10),
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.songs.length,
+            itemCount: widget.artistSongs.length,
             itemBuilder: ((context, index) {
-              return SongCard(song: widget.songs[index]);
+              return SongCard(song: widget.artistSongs[index]);
             }),
           ),
         ],

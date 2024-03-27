@@ -1,3 +1,5 @@
+import 'auth_model.dart';
+
 class Song {
   final String title;
   final String description;
@@ -16,6 +18,8 @@ class Song {
     required this.listens,
     this.isFavorite = false,
   });
+
+  Auth? get artistInfo => Auth.findArtistByName(artist);
 
   static List<Song> songs = [
     Song(
@@ -40,7 +44,7 @@ class Song {
         artist: 'Artist Name 3',
         listens: '123423'),
     Song(
-        title: 'Mặt trời ',
+        title: 'Mặt trời của em ',
         description: 'Mặt trời của em',
         url: 'assets/music/mattroi.mp3',
         coverUrl: 'assets/images/pray.jpg',
