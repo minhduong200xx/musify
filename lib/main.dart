@@ -11,9 +11,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9005);
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyAWVDnDoPMXo9hVlflMrU3ROOL8vt-F-vg",
+          appId: "1:801043302492:android:bb9dedeafa025e9f3e7e99",
+          messagingSenderId: "",
+          projectId: "musifyapp-cbe22"));
+  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9005);
   runApp(
     ChangeNotifierProvider(
       create: (_) => FavoriteSongsProvider(),
@@ -68,8 +71,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: Colors.deepPurple,
-              displayColor: Colors.deepPurple,
+              bodyColor: Colors.black,
+              displayColor: Colors.black,
             ),
       ),
       home: const HomeScreen(),

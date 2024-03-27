@@ -148,12 +148,10 @@ class _LoginPageState extends State<LoginPage> {
                                 email: _email,
                                 password: _password,
                               );
-                              // Handle successful login (e.g., navigate to home screen)
+
                               print('Login successful!');
-                              Navigator.pushNamed(context,
-                                  '/'); // Navigate to home page (replace with your route name)
+                              Navigator.pushNamed(context, '/');
                             } on FirebaseAuthException catch (e) {
-                              // Handle errors (e.g., user not found, wrong password)
                               print(e.code);
                               print(e.message);
                               ScaffoldMessenger.of(context).showSnackBar(
