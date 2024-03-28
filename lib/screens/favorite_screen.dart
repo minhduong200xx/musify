@@ -13,7 +13,6 @@ class FavoriteSong extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<_DiscoverLoveMusicState> _discoverLoveMusicKey =
         GlobalKey<_DiscoverLoveMusicState>();
-
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(

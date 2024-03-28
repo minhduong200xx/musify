@@ -8,7 +8,6 @@ class Song {
   final String audioUrl;
   final String singer;
   final String playlist;
-  final String fileName;
   bool isFavorite;
 
   Song({
@@ -16,7 +15,6 @@ class Song {
     required this.playlist,
     required this.singer,
     required this.title,
-    required this.fileName,
     required this.artist,
     required this.coverImageUrl,
     required this.audioUrl,
@@ -27,27 +25,14 @@ class Song {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Song(
       // Assigning id from document snapshot
-      id: doc.id,
+      id: data['id'].toString(),
       title: data['title'] ?? '',
       artist: data['artist'] ?? '',
       coverImageUrl: data['coverUrl'] ?? '',
       audioUrl: data['url'] ?? '',
       singer: data['singer'] ?? '',
       playlist: data['playlist'] ?? '',
-      fileName: data['fileName'] ?? '',
-      isFavorite: data['isFavorite'] ?? false,
     );
-  }
-
-  Future<void> addToPlaylist(String playlistId) async {
-    try {
-      await firestore.collection('playlists').doc(playlistId).update({
-        'songs': FieldValue.arrayUnion([this.id])
-      });
-      this.isFavorite = true;
-    } catch (e) {
-      print('Error adding song to playlist: $e');
-    }
   }
 }
 
