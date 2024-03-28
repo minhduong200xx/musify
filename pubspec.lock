@@ -189,50 +189,50 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_analytics
-      sha256: ddfcb2aadec496e3ae2c49aa77c11b416ff705c38a3faa837fcbddceb2e049fa
+      sha256: "56856f45f80d4463841b6c4c1d829ccc78b7c2265858c65b1c45e848868d79e5"
       url: "https://pub.dev"
     source: hosted
-    version: "10.8.10"
+    version: "10.9.0"
   firebase_analytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_analytics_platform_interface
-      sha256: "0a83107f585a630592e8b9113a7e0f2bd6fb72cdb331026ed45744f80686658d"
+      sha256: "188ae5ffccc9a2fc644179636b132060598f5fd991866c952664704fffdd66e4"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.10"
+    version: "3.10.0"
   firebase_analytics_web:
     dependency: transitive
     description:
       name: firebase_analytics_web
-      sha256: "920da330f32a3958af929084aa114eaceb3d3a267ab784b814d1bdfb622a8a9a"
+      sha256: e3f0c1aeac9022639388d2bff770d2d56ef7e3b456bd08559aa750f7338e6295
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.5+22"
+    version: "0.5.6"
   firebase_auth:
     dependency: "direct main"
     description:
       name: firebase_auth
-      sha256: "3fd6475e60d518c021e70e7d4262db7dac327adf496e71048545da2e0b9ca510"
+      sha256: "376cdf5048e3552afa6e7883334a03450d332c68466759a63f5fcbe990feaecc"
       url: "https://pub.dev"
     source: hosted
-    version: "4.17.9"
+    version: "4.18.0"
   firebase_auth_platform_interface:
     dependency: transitive
     description:
       name: firebase_auth_platform_interface
-      sha256: d44458576804f246a126fe797547330d2f7bd62069ce12479b583082340a2e4d
+      sha256: "316c8dae2aaa5920aa752807a773f06d9b0da48efda2efbae14b93f0ee835ddd"
       url: "https://pub.dev"
     source: hosted
-    version: "7.1.9"
+    version: "7.2.0"
   firebase_auth_web:
     dependency: transitive
     description:
       name: firebase_auth_web
-      sha256: "57262c987e4f4e30c3e9a31f41171348c7dfbcdb8c84faa4cf841cea33e0e499"
+      sha256: "1859c548568fc5f979130c694222504cf255a4b3af5186d1b4d6e5772ae6d08f"
       url: "https://pub.dev"
     source: hosted
-    version: "5.10.0"
+    version: "5.10.1"
   firebase_core:
     dependency: "direct main"
     description:
@@ -257,7 +257,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
-<<<<<<< HEAD
   firebase_storage:
     dependency: "direct main"
     description:
@@ -282,32 +281,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.8.1"
-=======
-  firebase_database:
-    dependency: "direct main"
-    description:
-      name: firebase_database
-      sha256: "8708fc64009d47f6e0c5a6f2361777d7e9069fd6c6a9c80d4494dabcf58f639f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "10.4.11"
-  firebase_database_platform_interface:
+  fixnum:
     dependency: transitive
     description:
-      name: firebase_database_platform_interface
-      sha256: "0eaa8e5f703901435e9d8e317120149e44491e94a084d5919dc5410fc240d93d"
+      name: fixnum
+      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.5+27"
-  firebase_database_web:
-    dependency: transitive
-    description:
-      name: firebase_database_web
-      sha256: "7dddb916d19c035bbbffebdce72f8a61238ac953df2ea23e66293281016c31b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.4"
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
+    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -696,6 +677,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -756,10 +745,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
+      sha256: cd210a09f7c18cbe5a02511718e0334de6559871052c90a90c0cca46a4aa81c8
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.7"
+    version: "4.3.3"
   vector_math:
     dependency: transitive
     description:

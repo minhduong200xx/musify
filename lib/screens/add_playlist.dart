@@ -47,7 +47,7 @@ class AddToPlaylistScreen extends StatelessWidget {
   void addToPlaylist(BuildContext context, Playlist playlist) async {
     try {
       // Gọi phương thức addToPlaylist của Song
-      await song.addToPlaylist(playlist.id);
+      // await song.addToPlaylist(playlist.id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Đã thêm vào ${playlist.title}'),

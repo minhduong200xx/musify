@@ -29,22 +29,7 @@ class _SongScreenState extends State<SongScreen> {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
-<<<<<<< HEAD
     audioPlayer.setUrl('${song.audioUrl}');
-=======
-
-    userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-
-    audioPlayer.setAudioSource(
-      ConcatenatingAudioSource(
-        children: [
-          AudioSource.uri(
-            Uri.parse('asset:///${song.audioUrl}'),
-          ),
-        ],
-      ),
-    );
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   }
 
   @override
@@ -162,10 +147,28 @@ class _SongScreenState extends State<SongScreen> {
         fit: StackFit.expand,
         children: [
           Image.network(
-            song.coverImageUrl,
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.height * 0.3,
-            fit: BoxFit.cover,
+            '${song.coverImageUrl}',
+            fit: BoxFit.contain,
+            alignment: Alignment.topCenter,
+            // loadingBuilder: (BuildContext context, Widget child,
+            //     ImageChunkEvent? loadingProgress) {
+            //   if (loadingProgress == null) {
+            //     return child;
+            //   } else {
+            //     return Center(
+            //       child: CircularProgressIndicator(
+            //         value: loadingProgress.expectedTotalBytes != null
+            //             ? loadingProgress.cumulativeBytesLoaded /
+            //                 loadingProgress.expectedTotalBytes!
+            //             : null,
+            //       ),
+            //     );
+            //   }
+            // },
+            // errorBuilder: (BuildContext context, Object exception,
+            //     StackTrace? stackTrace) {
+            //   return Text('Failed to load image');
+            // },
           ),
           const _BackgroundFilter(),
           _MusicPlayer(
@@ -240,7 +243,6 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
-<<<<<<< HEAD
                   Container(
                     child: Text(
                       song.singer,
@@ -250,21 +252,6 @@ class _MusicPlayer extends StatelessWidget {
                           .bodySmall!
                           .copyWith(color: Colors.white),
                     ),
-=======
-                  Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start, // Căn chỉnh về phía trái
-                    children: [
-                      Text(
-                        song.singer,
-                        maxLines: 2,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.white),
-                      ),
-                    ],
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
                   ),
                 ],
               ),
