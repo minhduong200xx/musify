@@ -29,6 +29,9 @@ class _SongScreenState extends State<SongScreen> {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
+<<<<<<< HEAD
+    audioPlayer.setUrl('${song.audioUrl}');
+=======
 
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
@@ -41,6 +44,7 @@ class _SongScreenState extends State<SongScreen> {
         ],
       ),
     );
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   }
 
   @override
@@ -90,7 +94,7 @@ class _SongScreenState extends State<SongScreen> {
                                   color: isFavorite
                                       ? Colors.deepPurple[200]
                                       : Colors.black),
-                              title: const Text('Thích'),
+                              title: const Text('Like'),
                               onTap: () {
                                 _favoriteSongsProvider.toggleFavorite(
                                     song, userId);
@@ -114,21 +118,21 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.share),
-                              title: const Text('Chia sẻ'),
+                              title: const Text('Share'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
                             ),
                             ListTile(
                               leading: const Icon(Icons.music_note),
-                              title: const Text('Xem bản nhạc'),
+                              title: const Text('View lyric'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
                             ),
                             ListTile(
                               leading: const Icon(Icons.person),
-                              title: const Text('Xem nghệ sĩ'),
+                              title: const Text('View author'),
                               onTap: () {
                                 Navigator.pop(context);
                                 Get.toNamed('/auth');
@@ -136,7 +140,7 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.album),
-                              title: const Text('Xem album'),
+                              title: const Text('View album'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -157,8 +161,10 @@ class _SongScreenState extends State<SongScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
+          Image.network(
             song.coverImageUrl,
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.height * 0.3,
             fit: BoxFit.cover,
           ),
           const _BackgroundFilter(),
@@ -234,6 +240,17 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
+<<<<<<< HEAD
+                  Container(
+                    child: Text(
+                      song.singer,
+                      maxLines: 2,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: Colors.white),
+                    ),
+=======
                   Row(
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Căn chỉnh về phía trái
@@ -247,6 +264,7 @@ class _MusicPlayer extends StatelessWidget {
                             .copyWith(color: Colors.white),
                       ),
                     ],
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
                   ),
                 ],
               ),

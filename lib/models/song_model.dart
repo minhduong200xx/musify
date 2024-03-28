@@ -8,13 +8,18 @@ class Song {
   final String audioUrl;
   final String singer;
   final String playlist;
+<<<<<<< HEAD
+  final String fileName;
+=======
   bool isFavorite;
 
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   Song({
     required this.id,
     required this.playlist,
     required this.singer,
     required this.title,
+    required this.fileName,
     required this.artist,
     required this.coverImageUrl,
     required this.audioUrl,
@@ -24,6 +29,16 @@ class Song {
   factory Song.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Song(
+<<<<<<< HEAD
+        // Assigning id from document snapshot
+        title: data['title'] ?? '',
+        artist: data['artist'] ?? '',
+        coverImageUrl: data['coverUrl'] ?? '',
+        audioUrl: data['url'] ?? '',
+        singer: data['singer'] ?? '',
+        playlist: data['playlist'] ?? '',
+        fileName: data['fileName'] ?? '');
+=======
       id: doc.id,
       title: data['title'] ?? '',
       artist: data['artist'] ?? '',
@@ -44,6 +59,7 @@ class Song {
     } catch (e) {
       print('Error adding song to playlist: $e');
     }
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   }
 }
 
