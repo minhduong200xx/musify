@@ -20,7 +20,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> routeNames = ['/', '/profile'];
+    final List<String> routeNames = ['/', '/library'];
     return Drawer(
       backgroundColor: Colors.deepPurple,
       child: Column(
@@ -36,7 +36,7 @@ class _MyDrawerState extends State<MyDrawer> {
             icon: Icons.account_circle,
             text: 'Profile',
             onTap: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/library');
             },
           ),
           MyListTile(

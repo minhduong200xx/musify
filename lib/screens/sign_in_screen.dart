@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_music_app_ui/screens/sign_up_screen.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'sign_up_screen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,63 +18,53 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+      backgroundColor: Colors.white.withOpacity(0.9),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title with Gradient Text
+              SizedBox(height: 30),
               Center(
-                  child: Text(
-                "Welcome Back!",
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  foreground: Paint()
-                    ..shader = LinearGradient(
-                      colors: <Color>[
-                        Colors.deepPurple.shade400,
-                        Colors.deepPurpleAccent
-                      ],
-                    ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 100.0)),
+                child: Text(
+                  "Welcome Back!",
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
+                  ),
                 ),
-              )),
-
-              // Sign Up Text
+              ),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Don\'t have an account?',
                     style: TextStyle(
-                      color: Colors.deepPurple.shade800.withOpacity(0.8),
+                      color: Colors.deepPurple,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navigate to login/register screen (using your chosen navigation method)
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SignUpPage()), // Replace with your login screen widget
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
                       );
-                    }, // Navigate to signup page (replace with your route name)
+                    },
                     child: Text(
                       'Sign Up',
                       style: TextStyle(
-                        color: Colors.deepPurple.shade500.withOpacity(0.8),
-                        fontSize: 20.0,
+                        color: Colors.deepPurple,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-
-              // Form with Rounded Borders
+              SizedBox(height: 30),
               Form(
                 key: _formKey,
                 child: Column(
@@ -85,21 +73,10 @@ class _LoginPageState extends State<LoginPage> {
                       key: ValueKey('emailField'),
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.8),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide:
-                              BorderSide(color: Colors.deepPurple.shade200),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Colors.deepPurple),
-                        ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your email address.';
+                        if (value!.isEmpty || !value.contains('@')) {
+                          return 'Invalid email address';
                         }
                         return null;
                       },
@@ -110,23 +87,11 @@ class _LoginPageState extends State<LoginPage> {
                       key: ValueKey('passwordField'),
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.8),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide:
-                              BorderSide(color: Colors.deepPurple.shade200),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Colors.deepPurple),
-                        ),
-                        suffixIcon: Icon(Icons.visibility_off),
                       ),
                       obscureText: true,
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your password.';
+                        if (value!.isEmpty || value.length < 6) {
+                          return 'Password must be at least 6 characters long';
                         }
                         return null;
                       },
@@ -135,14 +100,12 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-
               SizedBox(height: 16.0),
-
-              // Login Button with Gradient Background
-              Center(
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
+              _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Container(
+                      width: double.infinity,
+                      child: ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             setState(() {
@@ -151,17 +114,12 @@ class _LoginPageState extends State<LoginPage> {
                             _formKey.currentState!.save();
 
                             try {
-                              final userCredential =
-                                  await _auth.signInWithEmailAndPassword(
+                              await _auth.signInWithEmailAndPassword(
                                 email: _email,
                                 password: _password,
                               );
-
-                              print('Login successful!');
                               Navigator.pushNamed(context, '/');
                             } on FirebaseAuthException catch (e) {
-                              print(e.code);
-                              print(e.message);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(e.message!),
@@ -174,20 +132,14 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Text('Login'),
+                        child: Text('Login'),
                       ),
-              ),
-
-              // Forgot Password Text
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: TextButton(
+                    ),
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
                     onPressed: () {
                       // Implement Forgot Password functionality
                       print('Forgot Password pressed');
@@ -195,27 +147,28 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(
                       'Forgot Password?',
                       style: TextStyle(
-                        color: Colors.deepPurple.shade800.withOpacity(0.8),
+                        color: Colors.deepPurple,
                       ),
                     ),
                   ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Center(
+                child: Column(
+                  children: [
+                    SignInButton(
+                      Buttons.Google,
+                      onPressed: () => print('Google Login pressed'),
+                    ),
+                    SizedBox(height: 8.0),
+                    SignInButton(
+                      Buttons.Facebook,
+                      onPressed: () => print('Facebook Login pressed'),
+                    ),
+                  ],
                 ),
               ),
-              Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SignInButton(
-                    Buttons.Google,
-                    onPressed: () => print('Google Login pressed'),
-                  ),
-                  SizedBox(width: 8.0),
-                  SignInButton(
-                    Buttons.Facebook,
-                    onPressed: () => print('Facebook Login pressed'),
-                  ),
-                ],
-              )),
             ],
           ),
         ),

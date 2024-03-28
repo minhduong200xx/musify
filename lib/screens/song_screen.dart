@@ -29,22 +29,8 @@ class _SongScreenState extends State<SongScreen> {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
-<<<<<<< HEAD
-    audioPlayer.setUrl('${song.audioUrl}');
-=======
-
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-
-    audioPlayer.setAudioSource(
-      ConcatenatingAudioSource(
-        children: [
-          AudioSource.uri(
-            Uri.parse('asset:///${song.audioUrl}'),
-          ),
-        ],
-      ),
-    );
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
+    audioPlayer.setUrl('${song.audioUrl}');
   }
 
   @override
@@ -104,14 +90,12 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.add),
-                              title: const Text('Thêm vào danh sách khác'),
+                              title: const Text('Add to playlist'),
                               onTap: () {
-                                // Open AddToPlaylistScreen when "Thêm vào danh sách khác" is pressed
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddToPlaylistScreen(song: song),
+                                    builder: (context) => AddToPlaylistScreen(),
                                   ),
                                 );
                               },
@@ -240,17 +224,6 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
-<<<<<<< HEAD
-                  Container(
-                    child: Text(
-                      song.singer,
-                      maxLines: 2,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
-                    ),
-=======
                   Row(
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Căn chỉnh về phía trái
@@ -264,7 +237,6 @@ class _MusicPlayer extends StatelessWidget {
                             .copyWith(color: Colors.white),
                       ),
                     ],
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
                   ),
                 ],
               ),

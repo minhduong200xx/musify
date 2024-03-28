@@ -4,63 +4,78 @@ import '../models/playlist_model.dart';
 import '../models/song_model.dart';
 
 class AddToPlaylistScreen extends StatelessWidget {
-  final Song song;
-
-  const AddToPlaylistScreen({Key? key, required this.song}) : super(key: key);
+  const AddToPlaylistScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add to Playlist'),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.deepPurple.shade800.withOpacity(0.8),
+            Colors.deepPurple.shade200.withOpacity(0.8),
+          ],
+        ),
       ),
-      body: FutureBuilder<List<Playlist>>(
-        future: Playlist.createPlaylists(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No playlists available'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final playlist = snapshot.data![index];
-                return ListTile(
-                  title: Text(playlist.title),
-                  onTap: () {
-                    // Add song to the selected playlist
-                    addToPlaylist(context, playlist);
-                  },
-                );
-              },
-            );
-          }
-        },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text(
+            'Add to Playlist',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true, // Đặt true để căn giữa tiêu đề
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/liked-songs-64.png',
+                    height: 60,
+                    width: 60,
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Liked Songs',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Playlist',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14.0),
+                          ),
+                          const SizedBox(width: 5),
+                          const Icon(Icons.circle, size: 4),
+                          const SizedBox(width: 5),
+                          Text('29 tracks',
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 14.0))
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
-  }
-
-  // Function to add the song to the selected playlist
-  void addToPlaylist(BuildContext context, Playlist playlist) async {
-    try {
-      // Gọi phương thức addToPlaylist của Song
-      await song.addToPlaylist(playlist.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã thêm vào ${playlist.title}'),
-        ),
-      );
-      Navigator.of(context).pop(); // Đóng AddToPlaylistScreen
-    } catch (e) {
-      print('Error adding song to playlist: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã xảy ra lỗi khi thêm vào playlist'),
-        ),
-      );
-    }
   }
 }

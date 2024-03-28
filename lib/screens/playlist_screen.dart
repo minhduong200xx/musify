@@ -77,11 +77,7 @@ class _PlaylistSongs extends StatelessWidget {
                 .bodyLarge!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-<<<<<<< HEAD
           subtitle: Text('${playlist.songs[index].singer}  '),
-=======
-          subtitle: Text('${playlist.songs[index].singer} '),
->>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
           trailing: const Icon(
             Icons.more_vert,
             color: Colors.white,
