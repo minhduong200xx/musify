@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/screens/now_playing_bar.dart';
+import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
+import 'package:get/get.dart';
 
 import '../models/playlist_model.dart';
 import '../models/song_model.dart';
@@ -10,35 +15,63 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Song> songs = Song.songs;
-    List<Playlist> playlists = Playlist.playlists;
+    return FutureBuilder<List<Song>>(
+      future: fetchSongs(),
+      builder: (context, songSnapshot) {
+        if (songSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Placeholder widget while loading
+        }
+        if (songSnapshot.hasError) {
+          return Text('Error: ${songSnapshot.error}'); // Error handling
+        }
+        List<Song> songs = songSnapshot.data ?? []; // Extracted song list
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8),
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: const _CustomAppBar(),
-        drawer: MyDrawer(),
-        bottomNavigationBar: const _CustomNavBar(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const _DiscoverMusic(),
-              _TrendingMusic(songs: songs),
-              _PlaylistMusic(playlists: playlists),
-            ],
-          ),
-        ),
-      ),
+        return FutureBuilder<List<Playlist>>(
+          future: Playlist.createPlaylists(),
+          builder: (context, playlistSnapshot) {
+            if (playlistSnapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Placeholder widget while loading
+            }
+            if (playlistSnapshot.hasError) {
+              return Text('Error: ${playlistSnapshot.error}'); // Error handling
+            }
+            List<Playlist> playlists =
+                playlistSnapshot.data ?? []; // Extracted playlist list
+
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.deepPurple.shade800.withOpacity(0.8),
+                    Colors.deepPurple.shade200.withOpacity(0.8),
+                  ],
+                ),
+              ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: const _CustomAppBar(),
+                drawer: MyDrawer(),
+                bottomNavigationBar: const _CustomNavBar(),
+                body: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const _DiscoverMusic(),
+                          _TrendingMusic(songs: songs),
+                          _PlaylistMusic(playlists: playlists),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -119,14 +152,27 @@ class _DiscoverMusic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String _name;
+    final user = FirebaseAuth.instance.currentUser;
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Welcome',
-            style: Theme.of(context).textTheme.bodyLarge,
+          Row(
+            children: [
+              Text(
+                'Welcome ',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              Text(
+                '${user?.email ?? ""}',
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
           Text(
@@ -215,9 +261,21 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Container(
           margin: const EdgeInsets.only(right: 20),
-          child: const CircleAvatar(
-            backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1659025435463-a039676b45a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
+          child: TextButton(
+            // Use TextButton for clickable behavior
+            onPressed: () {
+              // Navigate to login/register screen (using your chosen navigation method)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        LoginPage()), // Replace with your login screen widget
+              );
+            },
+            child: const CircleAvatar(
+              backgroundImage: NetworkImage(
+                'https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonduck.com%2Ficons%2F313107%2Favatar-default&psig=AOvVaw2_wgTkuDRMA-3dE8pLe1RR&ust=1711536771095000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPjWwbvhkYUDFQAAAAAdAAAAABBZ',
+              ), // Adjust text color as needed
             ),
           ),
         ),

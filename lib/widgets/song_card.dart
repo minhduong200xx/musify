@@ -35,7 +35,7 @@ class SongCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
                 image: DecorationImage(
                   image: AssetImage(
-                    song.coverUrl,
+                    song.coverImageUrl,
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -64,9 +64,9 @@ class SongCard extends StatelessWidget {
                             ),
                       ),
                       Text(
-                        truncateText(song.description, 15),
+                        truncateText(song.singer, 15),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Colors.white,
+                              color: Colors.deepPurple,
                               fontWeight: FontWeight.bold,
                             ),
                       ),

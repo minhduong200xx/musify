@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:rxdart/rxdart.dart' as rxdart;
 import 'package:provider/provider.dart';
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
+import 'add_playlist.dart';
 
 class SongScreen extends StatefulWidget {
   const SongScreen({Key? key}) : super(key: key);
@@ -16,20 +18,25 @@ class SongScreen extends StatefulWidget {
 
 class _SongScreenState extends State<SongScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
-  Song song = Get.arguments ?? Song.songs[0];
+  Song song = Get.arguments ?? fetchSongs();
   bool isFavorite = false;
   bool isRepeatOne = false;
   FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
+  late String userId;
+
   @override
   void initState() {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
+
+    userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     audioPlayer.setAudioSource(
       ConcatenatingAudioSource(
         children: [
           AudioSource.uri(
-            Uri.parse('asset:///${song.url}'),
+            Uri.parse('asset:///${song.audioUrl}'),
           ),
         ],
       ),
@@ -59,7 +66,6 @@ class _SongScreenState extends State<SongScreen> {
     bool isFavorite = Provider.of<FavoriteSongsProvider>(context)
         .favoriteSongs
         .contains(song);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -86,9 +92,24 @@ class _SongScreenState extends State<SongScreen> {
                                       : Colors.black),
                               title: const Text('Thích'),
                               onTap: () {
-                                _favoriteSongsProvider.toggleFavorite(song);
+                                _favoriteSongsProvider.toggleFavorite(
+                                    song, userId);
                                 Navigator.pop(context);
                                 setState(() {});
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.add),
+                              title: const Text('Thêm vào danh sách khác'),
+                              onTap: () {
+                                // Open AddToPlaylistScreen when "Thêm vào danh sách khác" is pressed
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddToPlaylistScreen(song: song),
+                                  ),
+                                );
                               },
                             ),
                             ListTile(
@@ -100,7 +121,7 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.music_note),
-                              title: const Text('Thêm vào playlist'),
+                              title: const Text('Xem bản nhạc'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -110,7 +131,7 @@ class _SongScreenState extends State<SongScreen> {
                               title: const Text('Xem nghệ sĩ'),
                               onTap: () {
                                 Navigator.pop(context);
-                                Get.toNamed('/auth', arguments: song.artist);
+                                Get.toNamed('/auth');
                               },
                             ),
                             ListTile(
@@ -137,7 +158,7 @@ class _SongScreenState extends State<SongScreen> {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            song.coverUrl,
+            song.coverImageUrl,
             fit: BoxFit.cover,
           ),
           const _BackgroundFilter(),
@@ -148,7 +169,7 @@ class _SongScreenState extends State<SongScreen> {
             isFavorite: isFavorite,
             isRepeatOne: isRepeatOne,
             onFavoritePressed: () {
-              _favoriteSongsProvider.toggleFavorite(song);
+              _favoriteSongsProvider.toggleFavorite(song, userId);
             },
             onRepeatPressed: () {
               setState(() {
@@ -201,7 +222,9 @@ class _MusicPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Căn chỉnh về phía trái
                 children: [
                   Text(
                     song.title,
@@ -211,32 +234,36 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    song.description,
-                    maxLines: 2,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: Colors.white),
+                  Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Căn chỉnh về phía trái
+                    children: [
+                      Text(
+                        song.singer,
+                        maxLines: 2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    onPressed: onFavoritePressed,
-                    child: Consumer<FavoriteSongsProvider>(
-                      builder: (context, provider, _) {
-                        final isFavorite =
-                            provider.favoriteSongs.contains(song);
-                        return Icon(
-                          isFavorite ? Icons.favorite : Icons.favorite_border,
-                        );
-                      },
-                    ),
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: FloatingActionButton(
+                  onPressed: onFavoritePressed,
+                  child: Consumer<FavoriteSongsProvider>(
+                    builder: (context, provider, _) {
+                      final isFavorite = provider.favoriteSongs.contains(song);
+                      return Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                      );
+                    },
                   ),
-                ],
+                ),
               ),
             ],
           ),
