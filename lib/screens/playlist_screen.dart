@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_music_app_ui/models/models.dart';
+import 'package:get/get.dart';
 import '../models/playlist_model.dart';
 
-class PlaylistScreen extends StatelessWidget {
+class PlaylistScreen extends StatefulWidget {
   const PlaylistScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PlaylistScreen> createState() => _PlaylistScreenState();
+}
+
+class _PlaylistScreenState extends State<PlaylistScreen> {
+  late Playlist playlist;
+
+  @override
+  void initState() {
+    super.initState();
+    playlist = Get.arguments ?? Playlist.getPlaylistsFromFirestore();
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Playlist>>(
-      future: Playlist
-          .createPlaylists(), // Use createPlaylists() to get the playlists asynchronously
+      future: Playlist.getPlaylistsFromFirestore(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // While waiting for the future to complete, you can show a loading indicator
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          // If an error occurs, you can show an error message
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          // Once the future completes successfully, you can access the playlists
-          Playlist playlist = snapshot.data![
-              0]; // Access the first playlist, you might want to handle this differently based on your requirements
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

@@ -15,7 +15,7 @@ class AddToPlaylistScreen extends StatelessWidget {
         title: Text('Add to Playlist'),
       ),
       body: FutureBuilder<List<Playlist>>(
-        future: Playlist.createPlaylists(),
+        future: Playlist.getPlaylistsFromFirestore(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
