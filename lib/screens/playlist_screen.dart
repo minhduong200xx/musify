@@ -90,7 +90,7 @@ class _PlaylistSongs extends StatelessWidget {
                 .bodyLarge!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text('${playlist.songs[index].artist} ⚬ 02:45'),
+          subtitle: Text('${playlist.songs[index].singer}  '),
           trailing: const Icon(
             Icons.more_vert,
             color: Colors.white,

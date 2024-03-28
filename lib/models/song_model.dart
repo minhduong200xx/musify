@@ -8,11 +8,13 @@ class Song {
   final String audioUrl;
   final String singer;
   final String playlist;
+  final String fileName;
   Song({
     required this.playlist,
     required this.singer,
     // Updated constructor to accept id
     required this.title,
+    required this.fileName,
     required this.artist,
     required this.coverImageUrl,
     required this.audioUrl,
@@ -27,7 +29,8 @@ class Song {
         coverImageUrl: data['coverUrl'] ?? '',
         audioUrl: data['url'] ?? '',
         singer: data['singer'] ?? '',
-        playlist: data['playlist'] ?? '');
+        playlist: data['playlist'] ?? '',
+        fileName: data['fileName'] ?? '');
   }
 }
 
