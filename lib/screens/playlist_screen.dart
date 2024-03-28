@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../models/playlist_model.dart';
 
@@ -7,54 +9,40 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Playlist>>(
-      future: Playlist
-          .createPlaylists(), // Use createPlaylists() to get the playlists asynchronously
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // While waiting for the future to complete, you can show a loading indicator
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          // If an error occurs, you can show an error message
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          // Once the future completes successfully, you can access the playlists
-          Playlist playlist = snapshot.data![
-              0]; // Access the first playlist, you might want to handle this differently based on your requirements
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.deepPurple.shade800.withOpacity(0.8),
-                  Colors.deepPurple.shade200.withOpacity(0.8),
-                ],
-              ),
+    final Playlist playlist =
+        ModalRoute.of(context)!.settings.arguments as Playlist;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.deepPurple.shade800.withOpacity(0.8),
+            Colors.deepPurple.shade200.withOpacity(0.8),
+          ],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Playlist'),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                _PlaylistInformation(playlist: playlist),
+                const _PlayOrShuffleSwitch(),
+                _PlaylistSongs(playlist: playlist),
+              ],
             ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: const Text('Playlist'),
-              ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _PlaylistInformation(playlist: playlist),
-                      const _PlayOrShuffleSwitch(),
-                      _PlaylistSongs(playlist: playlist),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-      },
+          ),
+        ),
+      ),
     );
   }
 }
