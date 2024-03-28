@@ -47,8 +47,12 @@ dependencies:
   cloud_firestore: ^4.15.10
   google_sign_in: ^6.2.1
   flutter_facebook_auth: ^6.1.1
+<<<<<<< HEAD
   firebase_storage: ^11.6.11
   path_provider: ^2.1.2
+=======
+  firebase_database: ^10.4.11
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
 
 dev_dependencies:
   flutter_test:

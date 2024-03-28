@@ -12,7 +12,11 @@ import facebook_auth_desktop
 import firebase_analytics
 import firebase_auth
 import firebase_core
+<<<<<<< HEAD
 import firebase_storage
+=======
+import firebase_database
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
 import flutter_secure_storage_macos
 import google_sign_in_ios
 import just_audio
@@ -26,7 +30,11 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseAnalyticsPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseAnalyticsPlugin"))
   FLTFirebaseAuthPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseAuthPlugin"))
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
+<<<<<<< HEAD
   FLTFirebaseStoragePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseStoragePlugin"))
+=======
+  FLTFirebaseDatabasePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseDatabasePlugin"))
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
   FLTGoogleSignInPlugin.register(with: registry.registrar(forPlugin: "FLTGoogleSignInPlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))

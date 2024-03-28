@@ -5,15 +5,14 @@ import '../models/song_model.dart';
 import '../provider/favorite_provider.dart';
 
 class FavoriteSong extends StatelessWidget {
-  const FavoriteSong({Key? key}) : super(key: key);
+  final String userId;
+
+  const FavoriteSong({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<_DiscoverLoveMusicState> _discoverLoveMusicKey =
         GlobalKey<_DiscoverLoveMusicState>();
-
-    final favoriteSongs =
-        Provider.of<FavoriteSongsProvider>(context).favoriteSongs.toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -36,71 +35,86 @@ class FavoriteSong extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              _DiscoverLoveMusic(
-                key: _discoverLoveMusicKey,
-                favoriteSongs: favoriteSongs,
+              Consumer<FavoriteSongsProvider>(
+                builder: (context, favoriteProvider, _) {
+                  final favoriteSongs = favoriteProvider.favoriteSongs.toList();
+                  return _DiscoverLoveMusic(
+                    key: _discoverLoveMusicKey,
+                    favoriteSongs: favoriteSongs,
+                    favoriteProvider: favoriteProvider,
+                  );
+                },
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 10),
               const _PlayOrShuffleSwitch(),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               Expanded(
-                child: ListView.builder(
-                  itemCount: favoriteSongs.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        ListTile(
-                          tileColor: Colors.grey[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Colors.grey),
-                          ),
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: Image.network(
-                              favoriteSongs[index].coverImageUrl,
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: Text(favoriteSongs[index].title),
-                          subtitle: Text(favoriteSongs[index].artist),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.favorite,
-                                  color: Colors.deepPurple,
+                child: Consumer<FavoriteSongsProvider>(
+                  builder: (context, favoriteProvider, _) {
+                    final favoriteSongs =
+                        favoriteProvider.favoriteSongs.toList();
+                    return ListView.builder(
+                      itemCount: favoriteSongs.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              tileColor: Colors.grey[200],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(color: Colors.grey),
+                              ),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  favoriteSongs[index].coverImageUrl,
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
                                 ),
-                                onPressed: () {
-                                  Provider.of<FavoriteSongsProvider>(context,
-                                          listen: false)
-                                      .removeFromFavorites(
-                                          favoriteSongs[index]);
-                                  _DiscoverLoveMusicState?
-                                      _discoverLoveMusicState =
-                                      _discoverLoveMusicKey.currentState;
-                                  if (_discoverLoveMusicState != null) {
-                                    _discoverLoveMusicState
-                                        ._updateFilteredSongs();
-                                  }
-                                },
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.play_circle,
-                                    size: 30, color: Colors.deepPurple),
-                                onPressed: () {
-                                  Get.toNamed('/song',
-                                      arguments: favoriteSongs[index]);
-                                },
+                              title: Text(favoriteSongs[index].title),
+                              subtitle: Text(favoriteSongs[index].singer),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.favorite,
+                                      color: Colors.deepPurple,
+                                    ),
+                                    onPressed: () {
+                                      Provider.of<FavoriteSongsProvider>(
+                                              context,
+                                              listen: false)
+                                          .removeFromFavorites(
+                                        favoriteSongs[index],
+                                        userId,
+                                      );
+                                      _DiscoverLoveMusicState?
+                                          _discoverLoveMusicState =
+                                          _discoverLoveMusicKey.currentState;
+                                      if (_discoverLoveMusicState != null) {
+                                        _discoverLoveMusicState
+                                            ._updateFilteredSongs();
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.play_circle,
+                                        size: 30, color: Colors.deepPurple),
+                                    onPressed: () {
+                                      Get.toNamed('/song',
+                                          arguments: favoriteSongs[index]);
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        );
+                      },
                     );
                   },
                 ),
@@ -115,10 +129,12 @@ class FavoriteSong extends StatelessWidget {
 
 class _DiscoverLoveMusic extends StatefulWidget {
   final List<Song> favoriteSongs;
+  final FavoriteSongsProvider favoriteProvider;
 
   const _DiscoverLoveMusic({
     Key? key,
     required this.favoriteSongs,
+    required this.favoriteProvider,
   }) : super(key: key);
 
   @override
@@ -150,12 +166,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
 
   void _updateFilteredSongs() {
     setState(() {
-      _filteredSongs = widget.favoriteSongs.where((song) {
-        final title = song.title.toLowerCase();
-        final artist = song.artist.toLowerCase();
-        final searchLower = _searchController.text.toLowerCase();
-        return title.contains(searchLower) || artist.contains(searchLower);
-      }).toList();
+      _filteredSongs = widget.favoriteProvider.filteredSongs.toList();
     });
   }
 
@@ -358,6 +369,48 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CustomNavBar extends StatelessWidget {
+  const _CustomNavBar({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> routeNames = ['/', '/favorite', '/song', 'library'];
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.deepPurple.shade800,
+      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.white,
+      showUnselectedLabels: false,
+      showSelectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.favorite_outline),
+          label: 'Favorites',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.play_circle_outline),
+          label: 'Play',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people_outline),
+          label: 'Profile',
+        ),
+      ],
+      onTap: (index) {
+        if (index < routeNames.length) {
+          Navigator.pushNamed(context, routeNames[index]);
+        }
+      },
     );
   }
 }

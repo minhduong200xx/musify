@@ -45,7 +45,6 @@ class PlaylistScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       _PlaylistInformation(playlist: playlist),
-                      const SizedBox(height: 30),
                       const _PlayOrShuffleSwitch(),
                       _PlaylistSongs(playlist: playlist),
                     ],
@@ -90,7 +89,11 @@ class _PlaylistSongs extends StatelessWidget {
                 .bodyLarge!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
+<<<<<<< HEAD
           subtitle: Text('${playlist.songs[index].singer}  '),
+=======
+          subtitle: Text('${playlist.songs[index].singer} '),
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
           trailing: const Icon(
             Icons.more_vert,
             color: Colors.white,
@@ -111,87 +114,52 @@ class _PlayOrShuffleSwitch extends StatefulWidget {
 }
 
 class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
-  bool isPlay = true;
+  bool isPlaying = false;
+  bool isShuffleMode = false;
+  bool isLoopMode = false;
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          isPlay = !isPlay;
-        });
-      },
-      child: Container(
-        height: 50,
-        width: width,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              left: isPlay ? 0 : width * 0.45,
-              child: Container(
-                height: 50,
-                width: width * 0.45,
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple.shade400,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Play',
-                          style: TextStyle(
-                            color: isPlay ? Colors.white : Colors.deepPurple,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.play_circle,
-                        color: isPlay ? Colors.white : Colors.deepPurple,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Shuffle',
-                          style: TextStyle(
-                            color: isPlay ? Colors.deepPurple : Colors.white,
-                            fontSize: 17,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Icon(
-                        Icons.shuffle,
-                        color: isPlay ? Colors.deepPurple : Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return Container(
+      alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: isPlaying
+                ? const Icon(Icons.pause_circle)
+                : const Icon(Icons.play_circle),
+            iconSize: 60,
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                isPlaying = !isPlaying;
+              });
+            },
+          ),
+          const SizedBox(width: 5),
+          IconButton(
+            icon: isShuffleMode
+                ? const Icon(Icons.shuffle)
+                : isLoopMode
+                    ? const Icon(Icons.repeat_one)
+                    : const Icon(Icons.repeat),
+            iconSize: 30,
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                if (isShuffleMode) {
+                  isShuffleMode = false;
+                  isLoopMode = true;
+                } else if (isLoopMode) {
+                  isLoopMode = false;
+                } else {
+                  isShuffleMode = true;
+                }
+              });
+            },
+          ),
+        ],
       ),
     );
   }

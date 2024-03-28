@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:rxdart/rxdart.dart' as rxdart;
 import 'package:provider/provider.dart';
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
+import 'add_playlist.dart';
 
 class SongScreen extends StatefulWidget {
   const SongScreen({Key? key}) : super(key: key);
@@ -20,12 +22,29 @@ class _SongScreenState extends State<SongScreen> {
   bool isFavorite = false;
   bool isRepeatOne = false;
   FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
+  late String userId;
+
   @override
   void initState() {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
+<<<<<<< HEAD
     audioPlayer.setUrl('${song.audioUrl}');
+=======
+
+    userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+    audioPlayer.setAudioSource(
+      ConcatenatingAudioSource(
+        children: [
+          AudioSource.uri(
+            Uri.parse('asset:///${song.audioUrl}'),
+          ),
+        ],
+      ),
+    );
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
   }
 
   @override
@@ -51,7 +70,6 @@ class _SongScreenState extends State<SongScreen> {
     bool isFavorite = Provider.of<FavoriteSongsProvider>(context)
         .favoriteSongs
         .contains(song);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -78,9 +96,24 @@ class _SongScreenState extends State<SongScreen> {
                                       : Colors.black),
                               title: const Text('Like'),
                               onTap: () {
-                                _favoriteSongsProvider.toggleFavorite(song);
+                                _favoriteSongsProvider.toggleFavorite(
+                                    song, userId);
                                 Navigator.pop(context);
                                 setState(() {});
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.add),
+                              title: const Text('Thêm vào danh sách khác'),
+                              onTap: () {
+                                // Open AddToPlaylistScreen when "Thêm vào danh sách khác" is pressed
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddToPlaylistScreen(song: song),
+                                  ),
+                                );
                               },
                             ),
                             ListTile(
@@ -142,7 +175,7 @@ class _SongScreenState extends State<SongScreen> {
             isFavorite: isFavorite,
             isRepeatOne: isRepeatOne,
             onFavoritePressed: () {
-              _favoriteSongsProvider.toggleFavorite(song);
+              _favoriteSongsProvider.toggleFavorite(song, userId);
             },
             onRepeatPressed: () {
               setState(() {
@@ -195,6 +228,9 @@ class _MusicPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Căn chỉnh về phía trái
                 children: [
                   Text(
                     song.title,
@@ -204,6 +240,7 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
+<<<<<<< HEAD
                   Container(
                     child: Text(
                       song.singer,
@@ -213,6 +250,21 @@ class _MusicPlayer extends StatelessWidget {
                           .bodySmall!
                           .copyWith(color: Colors.white),
                     ),
+=======
+                  Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Căn chỉnh về phía trái
+                    children: [
+                      Text(
+                        song.singer,
+                        maxLines: 2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ],
+>>>>>>> 369f8e3a2368e64a012a2c5be8eef2922872e628
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/screens/now_playing_bar.dart';
 import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
 import 'package:get/get.dart';
@@ -53,14 +54,18 @@ class HomeScreen extends StatelessWidget {
                 appBar: const _CustomAppBar(),
                 drawer: MyDrawer(),
                 bottomNavigationBar: const _CustomNavBar(),
-                body: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const _DiscoverMusic(),
-                      _TrendingMusic(songs: songs),
-                      _PlaylistMusic(playlists: playlists),
-                    ],
-                  ),
+                body: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const _DiscoverMusic(),
+                          _TrendingMusic(songs: songs),
+                          _PlaylistMusic(playlists: playlists),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -208,7 +213,7 @@ class _CustomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> routeNames = ['/', '/favorite'];
+    final List<String> routeNames = ['/', '/favorite', '/song', 'library'];
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.deepPurple.shade800,
