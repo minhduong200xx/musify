@@ -25,6 +25,8 @@ class _SongScreenState extends State<SongScreen> {
   bool isRepeatOne = false;
   FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
   late String userId;
+  bool showLyric = false;
+
   @override
   void initState() {
     super.initState();
@@ -42,15 +44,18 @@ class _SongScreenState extends State<SongScreen> {
 
   Stream<SeekBarData> get _seekBarDataStream =>
       rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
-          audioPlayer.positionStream, audioPlayer.durationStream, (
-        Duration position,
-        Duration? duration,
-      ) {
-        return SeekBarData(
-          position,
-          duration ?? Duration.zero,
-        );
-      });
+        audioPlayer.positionStream,
+        audioPlayer.durationStream,
+        (
+          Duration position,
+          Duration? duration,
+        ) {
+          return SeekBarData(
+            position,
+            duration ?? Duration.zero,
+          );
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +82,12 @@ class _SongScreenState extends State<SongScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ListTile(
-                              leading: Icon(Icons.favorite,
-                                  color: isFavorite
-                                      ? Colors.deepPurple[200]
-                                      : Colors.black),
+                              leading: Icon(
+                                Icons.favorite,
+                                color: isFavorite
+                                    ? Colors.deepPurple[200]
+                                    : Colors.black,
+                              ),
                               title: const Text('Like'),
                               onTap: () {
                                 _favoriteSongsProvider.toggleFavorite(
@@ -112,6 +119,9 @@ class _SongScreenState extends State<SongScreen> {
                               leading: const Icon(Icons.music_note),
                               title: const Text('View lyric'),
                               onTap: () {
+                                setState(() {
+                                  showLyric = true;
+                                });
                                 Navigator.pop(context);
                               },
                             ),
@@ -143,37 +153,53 @@ class _SongScreenState extends State<SongScreen> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.network(
-            song.coverImageUrl,
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.height * 0.3,
-            fit: BoxFit.cover,
-          ),
-          const _BackgroundFilter(),
-          _MusicPlayer(
-            song: song,
-            seekBarDataStream: _seekBarDataStream,
-            audioPlayer: audioPlayer,
-            isFavorite: isFavorite,
-            isRepeatOne: isRepeatOne,
-            isShuffle: isShuffle,
-            onFavoritePressed: () {
-              _favoriteSongsProvider.toggleFavorite(song, userId);
-            },
-            onRepeatPressed: () {
-              setState(() {
-                isRepeatOne = !isRepeatOne;
-              });
+      body: GestureDetector(
+        // Bắt sự kiện vuốt sang phải để chuyển giữa màn hình bài hát và lyric
+        onHorizontalDragEnd: (details) {
+          if (!showLyric && details.primaryVelocity! < 0) {
+            setState(() {
+              showLyric = true;
+            });
+          } else if (showLyric && details.primaryVelocity! > 0) {
+            setState(() {
+              showLyric = false;
+            });
+          }
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              song.coverImageUrl,
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.height * 0.3,
+              fit: BoxFit.cover,
+            ),
+            const _BackgroundFilter(),
+            if (!showLyric)
+              _MusicPlayer(
+                song: song,
+                seekBarDataStream: _seekBarDataStream,
+                audioPlayer: audioPlayer,
+                isFavorite: isFavorite,
+                isRepeatOne: isRepeatOne,
+                isShuffle: isShuffle,
+                onFavoritePressed: () {
+                  _favoriteSongsProvider.toggleFavorite(song, userId);
+                },
+                onRepeatPressed: () {
+                  setState(() {
+                    isRepeatOne = !isRepeatOne;
+                  });
 
-              audioPlayer
-                  .setLoopMode(isRepeatOne ? LoopMode.one : LoopMode.off);
-            },
-            onShufflePressed: () async {},
-          ),
-        ],
+                  audioPlayer
+                      .setLoopMode(isRepeatOne ? LoopMode.one : LoopMode.off);
+                },
+                onShufflePressed: () async {},
+              ),
+            if (showLyric) _ShowLyric(),
+          ],
+        ),
       ),
     );
   }
@@ -249,8 +275,7 @@ class _MusicPlayer extends StatelessWidget {
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Căn chỉnh về phía trái
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     song.title,
@@ -261,8 +286,7 @@ class _MusicPlayer extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start, // Căn chỉnh về phía trái
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         song.singer,
@@ -352,6 +376,89 @@ class _MusicPlayer extends StatelessWidget {
   }
 }
 
+class _ShowLyric extends StatelessWidget {
+  const _ShowLyric({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: MediaQuery.of(context).padding.top),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Mặt trời kia dù ở đâu\n'
+              'Dù ngày trôi nhanh hay rất lâu\n'
+              'Dù là mình xa cách nhau, ánh sáng ấy vẫn là như thế\n'
+              'Vậy mà sau khi không có anh\n'
+              'Đoạn đường nào em đi cũng vắng tanh\n'
+              'Thời gian ơi xin hãy trôi nhanh để em được lại ở bên anh\n'
+              'Đôi mình yêu nhau từ khi anh nói với em\n'
+              'Rằng mỗi chiều khi trời nhá nhem\n'
+              'Anh lặng thầm vẫn đi theo em\n'
+              'Cùng em qua con đường tối đèn\n'
+              'Đèn đường khuya dù không sáng lên\n'
+              'Đừng lo nhé có anh như mặt trời dịu êm\n'
+              'Rồi thì cứ thế, mình thì cứ thế cuốn lấy nhau\n'
+              'Em đâu hay nếu mai này mây trời\n'
+              'Dang tay che mắt anh mình xa vời\n'
+              'Điều gì muốn đến rồi thì sẽ đến, sẽ đến thôi\n'
+              'Em luôn tin phía sau cơn ngủ mê anh sẽ về\n'
+              'Mặt trời kia dù ở đâu\n'
+              'Dù ngày trôi nhanh hay rất lâu\n'
+              'Dù là mình xa cách nhau, ánh sáng ấy vẫn là như thế\n'
+              'Vậy mà sau khi không có anh\n'
+              'Đoạn đường nào em đi cũng vắng tanh\n'
+              'Thời gian ơi xin hãy trôi nhanh để em được lại ở bên anh\n'
+              'I just wanna be with you\n'
+              '(I just wanna be with you)\n'
+              'I just wanna be, wanna be with you\n'
+              'I just wanna be with you\n'
+              '(I just wanna be with you)\n'
+              'I just wanna be, wanna be with you (ya ya)\n'
+              'Just, just, just, I\'m just, I\'m just ah\n'
+              'Anh call để cho em nghe đôi lời\n'
+              'Anh đang ở nơi không em, không người\n'
+              'Mây và gió đang thay lời anh nhớ em\n'
+              'Nhớ luôn tiếng cười\n'
+              'Em núp dưới màn mây nơi xa chân trời\n'
+              'Hay đang ở trong vòng tay bên ai kia rồi?\n'
+              '\'Cause I\'m in love with you, you\n'
+              '\'Cause I\'m in love with you\n'
+              'Rồi thì cứ thế, mình thì cứ thế cuốn lấy nhau\n'
+              'Em đâu hay nếu mai này mây trời\n'
+              'Dang tay che mắt anh mình xa vời\n'
+              'Điều gì muốn đến rồi thì sẽ đến, sẽ đến thôi\n'
+              'Em luôn tin phía sau cơn ngủ mê anh sẽ về\n'
+              'Mặt trời kia dù ở đâu\n'
+              'Dù ngày trôi nhanh hay rất lâu\n'
+              'Dù là mình xa cách nhau, ánh sáng ấy vẫn là như thế\n'
+              'Vậy mà sau khi không có anh\n'
+              'Đoạn đường nào em đi cũng vắng tanh (vắng tanh)\n'
+              'Thời gian ơi xin hãy trôi nhanh để em được lại ở bên anh\n'
+              'I just wanna be with you\n'
+              '(I just wanna be with you)\n'
+              'I just wanna be, wanna be with you\n'
+              'I just wanna be with you\n'
+              '(I just wanna be with you)\n'
+              'I just wanna be, wanna be with you\'',
+              style: TextStyle(
+                  color: Colors.white,
+                  height: 3.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _BackgroundFilter extends StatelessWidget {
   const _BackgroundFilter({
     Key? key,
@@ -362,18 +469,15 @@ class _BackgroundFilter extends StatelessWidget {
     return ShaderMask(
       shaderCallback: (rect) {
         return LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Colors.white.withOpacity(0.5),
-              Colors.white.withOpacity(0.0),
-            ],
-            stops: const [
-              0.0,
-              0.4,
-              0.6
-            ]).createShader(rect);
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white,
+            Colors.white.withOpacity(0.5),
+            Colors.white.withOpacity(0.0),
+          ],
+          stops: const [0.0, 0.4, 0.6],
+        ).createShader(rect);
       },
       blendMode: BlendMode.dstOut,
       child: Container(
