@@ -281,6 +281,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.8.1"
+<<<<<<< HEAD
+=======
   fixnum:
     dependency: transitive
     description:
@@ -289,6 +291,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+>>>>>>> e6853b83a658ca3487f6f7367180259923cf4ebc
   flutter:
     dependency: "direct main"
     description: flutter

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,7 @@ class _SongScreenState extends State<SongScreen> {
     super.initState();
     _favoriteSongsProvider =
         Provider.of<FavoriteSongsProvider>(context, listen: false);
+    userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     audioPlayer.setUrl('${song.audioUrl}');
   }
 
@@ -89,14 +91,12 @@ class _SongScreenState extends State<SongScreen> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.add),
-                              title: const Text('Thêm vào danh sách khác'),
+                              title: const Text('Add to playlist'),
                               onTap: () {
-                                // Open AddToPlaylistScreen when "Thêm vào danh sách khác" is pressed
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddToPlaylistScreen(song: song),
+                                    builder: (context) => AddToPlaylistScreen(),
                                   ),
                                 );
                               },
@@ -147,28 +147,10 @@ class _SongScreenState extends State<SongScreen> {
         fit: StackFit.expand,
         children: [
           Image.network(
-            '${song.coverImageUrl}',
-            fit: BoxFit.contain,
-            alignment: Alignment.topCenter,
-            // loadingBuilder: (BuildContext context, Widget child,
-            //     ImageChunkEvent? loadingProgress) {
-            //   if (loadingProgress == null) {
-            //     return child;
-            //   } else {
-            //     return Center(
-            //       child: CircularProgressIndicator(
-            //         value: loadingProgress.expectedTotalBytes != null
-            //             ? loadingProgress.cumulativeBytesLoaded /
-            //                 loadingProgress.expectedTotalBytes!
-            //             : null,
-            //       ),
-            //     );
-            //   }
-            // },
-            // errorBuilder: (BuildContext context, Object exception,
-            //     StackTrace? stackTrace) {
-            //   return Text('Failed to load image');
-            // },
+            song.coverImageUrl,
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.height * 0.3,
+            fit: BoxFit.cover,
           ),
           const _BackgroundFilter(),
           _MusicPlayer(
@@ -278,15 +260,19 @@ class _MusicPlayer extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    child: Text(
-                      song.singer,
-                      maxLines: 2,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
-                    ),
+                  Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Căn chỉnh về phía trái
+                    children: [
+                      Text(
+                        song.singer,
+                        maxLines: 2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ],
                   ),
                 ],
               ),

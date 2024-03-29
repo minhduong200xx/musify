@@ -30,37 +30,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
           return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.deepPurple.shade800.withOpacity(0.8),
-                  Colors.deepPurple.shade200.withOpacity(0.8),
-                ],
-              ),
-            ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: const Text('Playlist'),
-              ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _PlaylistInformation(playlist: playlist),
-                      const _PlayOrShuffleSwitch(),
-                      _PlaylistSongs(playlist: playlist),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.deepPurple.shade800.withOpacity(0.8),
+              Colors.deepPurple.shade200.withOpacity(0.8),
+            ],
+          )));
         }
       },
     );

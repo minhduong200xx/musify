@@ -76,21 +76,11 @@ class _HeaderLibraryState extends State<_HeaderLibrary> {
                     width: 10,
                   ),
                   Text(
-                    'Thư viện',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.search,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 15),
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
+                    'Your Library',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -124,7 +114,7 @@ class _HeaderLibraryState extends State<_HeaderLibrary> {
                           buttonStates['list']! ? Colors.white : null,
                     ),
                     child: Text(
-                      'Danh sách phát',
+                      'Playlist',
                       style: TextStyle(
                         color:
                             buttonStates['list']! ? Colors.black : Colors.white,
@@ -159,7 +149,7 @@ class _HeaderLibraryState extends State<_HeaderLibrary> {
                           buttonStates['artist']! ? Colors.white : null,
                     ),
                     child: Text(
-                      'Nghệ sĩ',
+                      'Artist',
                       style: TextStyle(
                         color: buttonStates['artist']!
                             ? Colors.black
@@ -198,13 +188,87 @@ class _ListMusicAndArtist extends StatefulWidget {
 class _ListMusicAndArtistState extends State<_ListMusicAndArtist> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return _FavoriteCard();
-        },
-      ),
+    return Column(
+      children: [
+        Row(
+          children: [_FavoriteCard()],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.asset(
+                  'assets/images/pray.jpg',
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'QNT',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                ),
+                Text('Artist',
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.8), fontSize: 14.0))
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Image.asset(
+              'assets/images/glass.jpg',
+              height: 60,
+              width: 60,
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Playlist #1',
+                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Playlist',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    const Icon(Icons.circle, size: 4),
+                    const SizedBox(width: 5),
+
+                    /// Tên tài khoản
+                    Text('minthang',
+                        style: TextStyle(color: Colors.white.withOpacity(0.8))),
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ],
     );
   }
 }
@@ -238,7 +302,7 @@ class _ArrangeListState extends State<_ArrangeList> {
                           children: <Widget>[
                             const ListTile(
                               title: Text(
-                                'Sắp xếp theo',
+                                'Sort by',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black),
@@ -246,19 +310,19 @@ class _ArrangeListState extends State<_ArrangeList> {
                               enabled: false,
                             ),
                             ListTile(
-                              title: const Text('Gần đây'),
+                              title: const Text('Recents'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
                             ),
                             ListTile(
-                              title: const Text('Mới thêm gần đây'),
+                              title: const Text('Recently added'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
                             ),
                             ListTile(
-                              title: const Text('Thứ tự chữ cái'),
+                              title: const Text('Alphabetical'),
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -282,7 +346,7 @@ class _ArrangeListState extends State<_ArrangeList> {
                       },
                     ),
                     Text(
-                      'Gần đây',
+                      'Recents',
                       style: TextStyle(color: Colors.white, fontSize: 14.0),
                     )
                   ],
@@ -308,44 +372,51 @@ class _FavoriteCardState extends State<_FavoriteCard> {
   Widget build(BuildContext context) {
     return Consumer<FavoriteSongsProvider>(
       builder: (context, provider, _) {
-        // Access filtered songs from the provider
         Set<Song> filteredSongs = provider.filteredSongs;
 
-        return Container(
-          child: Row(
-            children: [
-              Image.asset(
-                'assets/images/liked-songs-64.png',
-                height: 50,
-                width: 50,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Bài hát ưa thích',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Danh sách phát',
-                        style: TextStyle(color: Colors.white.withOpacity(0.8)),
-                      ),
-                      const SizedBox(width: 5),
-                      const Icon(Icons.circle, size: 4),
-                      const SizedBox(width: 5),
-                      Text('${filteredSongs.length} bài hát',
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.8)))
-                    ],
-                  )
-                ],
-              ),
-            ],
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/favorite');
+          },
+          child: Container(
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/liked-songs-64.png',
+                  height: 60,
+                  width: 60,
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Liked Songs',
+                      style: TextStyle(color: Colors.white, fontSize: 18.0),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Playlist',
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14.0),
+                        ),
+                        const SizedBox(width: 5),
+                        const Icon(Icons.circle, size: 4),
+                        const SizedBox(width: 5),
+                        Text('${filteredSongs.length} songs',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14.0))
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

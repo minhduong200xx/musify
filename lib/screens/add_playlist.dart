@@ -4,17 +4,22 @@ import '../models/playlist_model.dart';
 import '../models/song_model.dart';
 
 class AddToPlaylistScreen extends StatelessWidget {
-  final Song song;
-
-  const AddToPlaylistScreen({Key? key, required this.song}) : super(key: key);
+  const AddToPlaylistScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add to Playlist'),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.deepPurple.shade800.withOpacity(0.8),
+            Colors.deepPurple.shade200.withOpacity(0.8),
+          ],
+        ),
       ),
-      body: FutureBuilder<List<Playlist>>(
+      child: FutureBuilder<List<Playlist>>(
         future: Playlist.getPlaylistsFromFirestore(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -32,7 +37,7 @@ class AddToPlaylistScreen extends StatelessWidget {
                   title: Text(playlist.title),
                   onTap: () {
                     // Add song to the selected playlist
-                    addToPlaylist(context, playlist);
+                    // addToPlaylist(context, playlist);
                   },
                 );
               },
@@ -41,26 +46,5 @@ class AddToPlaylistScreen extends StatelessWidget {
         },
       ),
     );
-  }
-
-  // Function to add the song to the selected playlist
-  void addToPlaylist(BuildContext context, Playlist playlist) async {
-    try {
-      // Gọi phương thức addToPlaylist của Song
-      // await song.addToPlaylist(playlist.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã thêm vào ${playlist.title}'),
-        ),
-      );
-      Navigator.of(context).pop(); // Đóng AddToPlaylistScreen
-    } catch (e) {
-      print('Error adding song to playlist: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã xảy ra lỗi khi thêm vào playlist'),
-        ),
-      );
-    }
   }
 }

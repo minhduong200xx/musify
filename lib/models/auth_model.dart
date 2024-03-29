@@ -1,39 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Auth {
   final String name;
   final String bgUrl;
-  final int listenCount;
+  final String listens;
 
   Auth({
     required this.name,
     required this.bgUrl,
-    required this.listenCount,
+    required this.listens,
   });
 
-  static Auth? findArtistByName(String name) {
-    return artist?.firstWhere((auth) => auth.name == name,
-        orElse: () => null as Auth);
-  }
+  static List<Auth> artist = [];
 
-  static List<Auth> artist = [
-    Auth(
-      name: 'Artist Name 1',
-      bgUrl: 'assets/images/auth.jpg',
-      listenCount: 990,
-    ),
-    Auth(
-      name: 'Artist Name 2',
-      bgUrl: 'assets/images/auth.jpg',
-      listenCount: 991,
-    ),
-    Auth(
-      name: 'Artist Name 3',
-      bgUrl: 'assets/images/auth.jpg',
-      listenCount: 992,
-    ),
-    Auth(
-      name: 'Phương Ly',
-      bgUrl: 'assets/images/auth.jpg',
-      listenCount: 993,
-    )
-  ];
+  static Future<void> fetchDataFromFirestore() async {
+    try {
+      // Lấy reference tới collection "artists" trong Firestore
+      CollectionReference artists =
+          FirebaseFirestore.instance.collection('singer');
+
+      // Lấy dữ liệu từ Firestore
+      QuerySnapshot querySnapshot = await artists.get();
+
+      // Duyệt qua từng tài liệu và thêm vào danh sách artist
+      querySnapshot.docs.forEach((doc) {
+        artist.add(
+          Auth(
+            name: doc['name'],
+            bgUrl: doc['bgUrl'],
+            listens: doc['listens'],
+          ),
+        );
+      });
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print("Error fetching data: $e");
+    }
+  }
 }

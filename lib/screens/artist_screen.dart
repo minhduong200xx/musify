@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_music_app_ui/models/song_model.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
+import 'package:flutter_music_app_ui/provider/provider_auth_follow.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,11 @@ class ArtistScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text('990 N người nghe hàng tháng'),
+                        Text(
+                          '1.4M monthly listeners',
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.8)),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -188,10 +193,9 @@ class _FollowAndMore extends StatefulWidget {
 }
 
 class _FollowAndMoreState extends State<_FollowAndMore> {
-  bool isFollowing = false;
-
   @override
   Widget build(BuildContext context) {
+    final followProvider = Provider.of<FollowProvider>(context);
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
@@ -200,20 +204,17 @@ class _FollowAndMoreState extends State<_FollowAndMore> {
             style: ButtonStyle(
               side: MaterialStateProperty.resolveWith<BorderSide>(
                 (Set<MaterialState> states) {
-                  return BorderSide(
-                    color: isFollowing ? Colors.white : Colors.white,
-                    width: 1,
-                  );
+                  return BorderSide(color: Colors.white);
                 },
               ),
             ),
             onPressed: () {
-              setState(() {
-                isFollowing = !isFollowing;
-              });
+              followProvider.toggleFollow();
             },
             child: Text(
-              isFollowing ? 'Theo dõi' : 'Đang theo dõi',
+              followProvider.isFollowing
+                  ? 'Follow'
+                  : 'Following', // Đổi từ "Follow" sang "Stop Flow"
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -225,75 +226,85 @@ class _FollowAndMoreState extends State<_FollowAndMore> {
               showModalBottomSheet(
                 context: context,
                 builder: (BuildContext context) {
-                  return Container(
-                    color: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            title: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/images/auth.jpg'),
+                  return Consumer<FollowProvider>(
+                    builder: (context, followProvider, _) {
+                      return Container(
+                        color: Colors.transparent,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/images/auth.jpg'),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Phương Ly',
+                                    )
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 10,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Divider(
+                                color: Colors.grey,
+                                height: 0,
+                                thickness: 1,
+                                indent: 16,
+                                endIndent: 16,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.person_add),
+                                title: Text(
+                                  followProvider.isFollowing
+                                      ? 'Follow'
+                                      : 'Stop Following',
                                 ),
-                                Text(
-                                  'Phương Ly',
-                                )
-                              ],
-                            ),
+                                onTap: () {
+                                  followProvider.toggleFollow();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.do_not_disturb_on),
+                                title: Text(
+                                  'Don\'t play this artist',
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.share),
+                                title: Text('Share'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.report),
+                                title: Text('Report'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Get.toNamed('/auth');
+                                },
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Divider(
-                            color: Colors.grey,
-                            height: 0,
-                            thickness: 1,
-                            indent: 16,
-                            endIndent: 16,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.person_add),
-                            title: const Text('Theo dõi'),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.do_not_disturb_on),
-                            title:
-                                const Text('Không phát nhạc của nghệ sĩ này'),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.share),
-                            title: const Text('Chia sẻ'),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.report),
-                            title: const Text('Báo cáo'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Get.toNamed('/auth');
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   );
                 },
               );

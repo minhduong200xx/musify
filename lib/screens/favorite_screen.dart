@@ -13,7 +13,6 @@ class FavoriteSong extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<_DiscoverLoveMusicState> _discoverLoveMusicKey =
         GlobalKey<_DiscoverLoveMusicState>();
-
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -33,27 +32,29 @@ class FavoriteSong extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Consumer<FavoriteSongsProvider>(
-                builder: (context, favoriteProvider, _) {
-                  final favoriteSongs = favoriteProvider.favoriteSongs.toList();
-                  return _DiscoverLoveMusic(
-                    key: _discoverLoveMusicKey,
-                    favoriteSongs: favoriteSongs,
-                    favoriteProvider: favoriteProvider,
-                  );
-                },
-              ),
-              const SizedBox(height: 10),
-              const _PlayOrShuffleSwitch(),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Consumer<FavoriteSongsProvider>(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Consumer<FavoriteSongsProvider>(
+                  builder: (context, favoriteProvider, _) {
+                    final favoriteSongs =
+                        favoriteProvider.favoriteSongs.toList();
+                    return _DiscoverLoveMusic(
+                      key: _discoverLoveMusicKey,
+                      favoriteSongs: favoriteSongs,
+                      favoriteProvider: favoriteProvider,
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                const _PlayOrShuffleSwitch(),
+                const SizedBox(height: 10),
+                Consumer<FavoriteSongsProvider>(
                   builder: (context, favoriteProvider, _) {
                     final favoriteSongs =
                         favoriteProvider.favoriteSongs.toList();
                     return ListView.builder(
+                      shrinkWrap: true,
                       itemCount: favoriteSongs.length,
                       itemBuilder: (context, index) {
                         return Column(
@@ -73,7 +74,15 @@ class FavoriteSong extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              title: Text(favoriteSongs[index].title),
+                              title: Text(
+                                favoriteSongs[index].title.length > 10
+                                    ? '${favoriteSongs[index].title.substring(0, 12)}...'
+                                    : favoriteSongs[index].title,
+                                // Giữ cho chỉ có một dòng được hiển thị
+                                maxLines: 1,
+                                // Không cho phép văn bản vượt qua khung hình
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               subtitle: Text(favoriteSongs[index].singer),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -85,14 +94,14 @@ class FavoriteSong extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       Provider.of<FavoriteSongsProvider>(
-                                              context,
-                                              listen: false)
-                                          .removeFromFavorites(
+                                        context,
+                                        listen: false,
+                                      ).removeFromFavorites(
                                         favoriteSongs[index],
                                         userId,
                                       );
-                                      _DiscoverLoveMusicState?
-                                          _discoverLoveMusicState =
+
+                                      final _discoverLoveMusicState =
                                           _discoverLoveMusicKey.currentState;
                                       if (_discoverLoveMusicState != null) {
                                         _discoverLoveMusicState
@@ -118,8 +127,8 @@ class FavoriteSong extends StatelessWidget {
                     );
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -166,6 +175,7 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
 
   void _updateFilteredSongs() {
     setState(() {
+      // Gán danh sách bài hát yêu thích bằng danh sách mới từ favoriteProvider.filteredSongs
       _filteredSongs = widget.favoriteProvider.filteredSongs.toList();
     });
   }
@@ -294,14 +304,14 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Bài hát ưa thích',
+            'Liked songs',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
           ),
           Text(
-            '${_filteredSongs.length} bài hát',
+            '${_filteredSongs.length} songs',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.white,
                 ),

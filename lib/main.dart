@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/provider/provider_auth_follow.dart';
 import 'package:flutter_music_app_ui/screens/artist_screen.dart';
 import 'package:flutter_music_app_ui/screens/favorite_screen.dart';
 import 'package:get/get.dart';
@@ -20,11 +21,15 @@ Future<void> main() async {
           projectId: "musifyapp-cbe22"));
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9005);
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => FavoriteSongsProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FollowProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteSongsProvider()),
+      ],
       child: const MyApp(),
     ),
   );
+
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user == null) {
       print('User is currently signed out!');
