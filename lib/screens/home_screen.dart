@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_music_app_ui/screens/now_playing_bar.dart';
 import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
 import 'package:get/get.dart';
-
 import '../models/playlist_model.dart';
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                     SingleChildScrollView(
                       child: Column(
                         children: [
-                          const _DiscoverMusic(),
+                          _DiscoverMusic(),
                           _TrendingMusic(songs: songs),
                           _PlaylistMusic(playlists: playlists),
                         ],
@@ -145,10 +145,31 @@ class _TrendingMusic extends StatelessWidget {
   }
 }
 
-class _DiscoverMusic extends StatelessWidget {
-  const _DiscoverMusic({
-    Key? key,
-  }) : super(key: key);
+class _DiscoverMusic extends StatefulWidget {
+  const _DiscoverMusic({Key? key}) : super(key: key);
+
+  @override
+  _DiscoverMusicState createState() => _DiscoverMusicState();
+}
+
+class _DiscoverMusicState extends State<_DiscoverMusic> {
+  TextEditingController _searchController = TextEditingController();
+  List<Song> _searchResults = [];
+
+  Future<List<Song>> searchSongs(String query) async {
+    // Get reference to the Firestore collection
+    CollectionReference songsRef =
+        FirebaseFirestore.instance.collection('songs');
+
+    // Query the Firestore collection for songs containing the query
+    QuerySnapshot querySnapshot = await songsRef.get();
+
+    List<Song> results = querySnapshot.docs
+        .map((doc) => Song.fromFirestore(doc))
+        .where((song) => song.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    return results;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +205,14 @@ class _DiscoverMusic extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           TextFormField(
+            controller: _searchController,
+            onChanged: (value) async {
+              // Call the search function when text changes
+              List<Song> songs = await searchSongs(value);
+              setState(() {
+                _searchResults = songs;
+              });
+            },
             decoration: InputDecoration(
               isDense: true,
               filled: true,
@@ -193,7 +222,14 @@ class _DiscoverMusic extends StatelessWidget {
                   .textTheme
                   .bodyMedium!
                   .copyWith(color: Colors.grey.shade400),
-              prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+              suffixIcon: ElevatedButton(
+                onPressed: () {
+                  _showSearchResultsPopup(context);
+                },
+                child: Icon(
+                  Icons.search,
+                ),
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide.none,
@@ -202,6 +238,76 @@ class _DiscoverMusic extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showSearchResultsPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: ThemeData(
+            dialogBackgroundColor: Color.fromARGB(142, 0, 0, 0),
+            dialogTheme: DialogTheme(
+              backgroundColor: Color.fromARGB(223, 255, 255, 255),
+            ),
+          ),
+          child: AlertDialog(
+            title: Text('Search Results',
+                style: TextStyle(color: Color.fromARGB(255, 89, 4, 129))),
+            content: Container(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _searchResults.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    tileColor: Colors.grey[200],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side:
+                          const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.network(
+                        _searchResults[index].coverImageUrl,
+                        height: 50,
+                        width: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    title: Text(_searchResults[index].title),
+                    subtitle: Text(_searchResults[index].singer),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.play_circle,
+                              size: 30, color: Colors.deepPurple),
+                          onPressed: () {
+                            Get.toNamed('/song',
+                                arguments: _searchResults[index]);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child:
+                    Text('Close', style: TextStyle(color: Colors.deepPurple)),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

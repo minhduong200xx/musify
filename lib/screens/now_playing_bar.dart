@@ -7,8 +7,6 @@ class FloatingNowPlayingBar extends StatelessWidget {
     final audioPlayer = GlobalAudioPlayer.audioPlayer;
 
     return Container(
-      // Thiết kế thanh hiện đang phát ở đây
-      // Ví dụ:
       height: 100,
       color: Colors.black.withOpacity(0.5),
       child: Row(
@@ -16,8 +14,7 @@ class FloatingNowPlayingBar extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.play_arrow),
             onPressed: () {
-              audioPlayer
-                  .play(); // Gọi phương thức play từ trình phát âm thanh toàn cục
+              audioPlayer.play(); //
             },
           ),
           IconButton(
