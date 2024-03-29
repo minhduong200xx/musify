@@ -361,6 +361,7 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -374,13 +375,14 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        LoginPage()), // Replace with your login screen widget
+                    builder: (context) => user != null
+                        ? ProfileScreen()
+                        : LoginPage()), // Replace with your login screen widget
               );
             },
             child: const CircleAvatar(
               backgroundImage: NetworkImage(
-                'https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonduck.com%2Ficons%2F313107%2Favatar-default&psig=AOvVaw2_wgTkuDRMA-3dE8pLe1RR&ust=1711536771095000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCPjWwbvhkYUDFQAAAAAdAAAAABBZ',
+                'https://cdn4.iconfinder.com/data/icons/music-ui-solid-24px/24/user_account_profile-2-512.png',
               ), // Adjust text color as needed
             ),
           ),

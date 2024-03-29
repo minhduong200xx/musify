@@ -15,14 +15,11 @@ class Auth {
 
   static Future<void> fetchDataFromFirestore() async {
     try {
-      // Lấy reference tới collection "artists" trong Firestore
       CollectionReference artists =
           FirebaseFirestore.instance.collection('singer');
 
-      // Lấy dữ liệu từ Firestore
       QuerySnapshot querySnapshot = await artists.get();
 
-      // Duyệt qua từng tài liệu và thêm vào danh sách artist
       querySnapshot.docs.forEach((doc) {
         artist.add(
           Auth(
@@ -33,7 +30,6 @@ class Auth {
         );
       });
     } catch (e) {
-      // Xử lý lỗi nếu có
       print("Error fetching data: $e");
     }
   }

@@ -107,20 +107,17 @@ Future<Song?> getPreviousSong(String currentSongId) async {
 
 Future<Song?> getRandomSong() async {
   try {
-    // Get the total count of songs
     final int songCount = await FirebaseFirestore.instance
         .collection('songs')
         .get()
         .then((querySnapshot) => querySnapshot.size);
 
-    // Generate a random index within the range of the song count
     int randomIndex = Random().nextInt(songCount);
     final songsSnapshot = await FirebaseFirestore.instance
         .collection('songs')
         .where('id', isEqualTo: randomIndex)
         .limit(1)
         .get();
-    // Retrieve the song at the random index
 
     final List<QueryDocumentSnapshot> docs = songsSnapshot.docs;
     if (docs.isNotEmpty) {

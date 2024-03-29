@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -57,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '3 danh sách phát công khai', // Replace with actual playlist count
+                          'Public Playlist 0', // Replace with actual playlist count
                           style: const TextStyle(
                               color: Colors.white, fontSize: 18.0),
                         ),

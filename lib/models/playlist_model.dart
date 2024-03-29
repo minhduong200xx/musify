@@ -14,7 +14,6 @@ class Playlist {
     required this.imageUrl,
   });
 
-  // Method to fetch songs from Firestore
   static Future<List<Song>> getAllSongsFromFirestore() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('songs').get();
@@ -23,7 +22,6 @@ class Playlist {
     return songs;
   }
 
-  // Method to fetch playlists from Firestore
   static Future<List<Playlist>> getPlaylistsFromFirestore() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('playlists').get();
@@ -75,13 +73,12 @@ class Playlist {
     }
   }
 
-  // Factory method to create Playlist object from Firestore data
   factory Playlist.fromFirestore(Map<String, dynamic> data) {
     return Playlist(
-      id: data['id'] ?? '', // Include id field
+      id: data['id'] ?? '', //
       title: data['title'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
-      songs: [], // Initially, songs are empty and will be fetched later
+      songs: [],
     );
   }
 }
