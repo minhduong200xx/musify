@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/widgets/my_list_tile.dart';
+import 'package:musify/widgets/my_list_tile.dart';
 
 class MyDrawer extends StatefulWidget {
   @override

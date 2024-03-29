@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/models/song_model.dart';
+import 'package:musify/models/song_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavoriteSongsProvider extends ChangeNotifier {

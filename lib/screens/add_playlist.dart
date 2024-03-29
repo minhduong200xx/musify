@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/screens/playlist_screen.dart';
+import 'package:musify/screens/playlist_screen.dart';
 import '../models/playlist_model.dart';
 import '../models/song_model.dart';
 

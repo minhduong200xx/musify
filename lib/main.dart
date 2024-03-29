@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/provider/provider_auth_follow.dart';
-import 'package:flutter_music_app_ui/screens/artist_screen.dart';
-import 'package:flutter_music_app_ui/screens/favorite_screen.dart';
+import 'package:musify/provider/provider_auth_follow.dart';
+import 'package:musify/screens/artist_screen.dart';
+import 'package:musify/screens/favorite_screen.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'provider/favorite_provider.dart';
 import 'screens/screens.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:flutter_music_app_ui/screens/library_screen.dart';
+import 'package:musify/screens/library_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> main() async {
@@ -96,7 +96,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/auth', page: () => const ArtistScreen()),
         GetPage(name: '/library', page: () => const LibraryScreen()),
-        
       ],
     );
   }

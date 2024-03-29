@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/widgets/global_audio.dart';
+import 'package:musify/widgets/global_audio.dart';
 import 'package:bottom_navbar_player/bottom_navbar_player.dart';
 
 class Bottom extends StatelessWidget {
- @override
+  @override
   Widget build(BuildContext context) {
     /// create an instance of the class
     final bottomNavBarPlayer = BottomNavBarPlayer();

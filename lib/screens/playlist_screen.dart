@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app_ui/models/models.dart';
+import 'package:musify/models/models.dart';
 import 'package:get/get.dart';
 import '../models/playlist_model.dart';
 
@@ -53,7 +53,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   child: Column(
                     children: [
                       _PlaylistInformation(playlist: playlist),
-                      const _PlayOrShuffleSwitch(),
+                      _PlayOrShuffleSwitch(playlist: playlist),
                       _PlaylistSongs(playlist: playlist),
                     ],
                   ),
@@ -111,8 +111,9 @@ class _PlaylistSongs extends StatelessWidget {
 class _PlayOrShuffleSwitch extends StatefulWidget {
   const _PlayOrShuffleSwitch({
     Key? key,
+    required this.playlist,
   }) : super(key: key);
-
+  final Playlist playlist;
   @override
   State<_PlayOrShuffleSwitch> createState() => _PlayOrShuffleSwitchState();
 }
@@ -121,7 +122,6 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
   bool isPlaying = false;
   bool isShuffleMode = false;
   bool isLoopMode = false;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -136,6 +136,7 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
             iconSize: 60,
             color: Colors.white,
             onPressed: () {
+              Get.toNamed("/song", arguments: widget.playlist.songs[0]);
               setState(() {
                 isPlaying = !isPlaying;
               });

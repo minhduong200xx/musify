@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_music_app_ui/models/song_model.dart';
-import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
-import 'package:flutter_music_app_ui/provider/provider_auth_follow.dart';
+import 'package:musify/models/song_model.dart';
+import 'package:musify/provider/favorite_provider.dart';
+import 'package:musify/provider/provider_auth_follow.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
