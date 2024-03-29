@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Song {
@@ -49,4 +51,88 @@ Future<List<Song>> fetchSongs() async {
         .then((snapshot) => song.isFavorite = snapshot.exists);
     return song;
   }).toList());
+}
+
+Future<Song?> getNextSong(String currentSongId) async {
+  try {
+    final songsSnapshot = await FirebaseFirestore.instance
+        .collection('songs')
+        .orderBy('id')
+        .startAfter([int.parse(currentSongId)])
+        .limit(1)
+        .get();
+
+    final List<QueryDocumentSnapshot> docs = songsSnapshot.docs;
+    if (docs.isNotEmpty) {
+      final doc = docs.first;
+      final song = Song.fromFirestore(doc);
+      print(currentSongId);
+      print(song.title);
+      return song;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Error getting next song: $e');
+    return null;
+  }
+}
+
+Future<Song?> getPreviousSong(String currentSongId) async {
+  try {
+    final currentSongIdInt = int.parse(currentSongId);
+    final songsSnapshot = await FirebaseFirestore.instance
+        .collection('songs')
+        .where('id', isLessThan: currentSongIdInt)
+        .orderBy('id', descending: true)
+        .limit(1)
+        .get();
+
+    final List<QueryDocumentSnapshot> docs = songsSnapshot.docs;
+    if (docs.isNotEmpty) {
+      final doc = docs.first;
+      final song = Song.fromFirestore(doc);
+      print(currentSongId);
+      print(song.title);
+      return song;
+    } else {
+      print("No previous song found.");
+      return null;
+    }
+  } catch (e) {
+    print('Error getting previous song: $e');
+    return null;
+  }
+}
+
+Future<Song?> getRandomSong() async {
+  try {
+    // Get the total count of songs
+    final int songCount = await FirebaseFirestore.instance
+        .collection('songs')
+        .get()
+        .then((querySnapshot) => querySnapshot.size);
+
+    // Generate a random index within the range of the song count
+    int randomIndex = Random().nextInt(songCount);
+    final songsSnapshot = await FirebaseFirestore.instance
+        .collection('songs')
+        .where('id', isEqualTo: randomIndex)
+        .limit(1)
+        .get();
+    // Retrieve the song at the random index
+
+    final List<QueryDocumentSnapshot> docs = songsSnapshot.docs;
+    if (docs.isNotEmpty) {
+      final doc = docs.first;
+      final song = Song.fromFirestore(doc);
+      print(song.title);
+      return song;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Error getting random song: $e');
+    return null;
+  }
 }

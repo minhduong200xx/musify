@@ -1,48 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/models/models.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
 import '../models/playlist_model.dart';
 
-class PlaylistScreen extends StatelessWidget {
+class PlaylistScreen extends StatefulWidget {
   const PlaylistScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final Playlist playlist =
-        ModalRoute.of(context)!.settings.arguments as Playlist;
+  State<PlaylistScreen> createState() => _PlaylistScreenState();
+}
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8),
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text('Playlist'),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                _PlaylistInformation(playlist: playlist),
-                const _PlayOrShuffleSwitch(),
-                _PlaylistSongs(playlist: playlist),
-              ],
+class _PlaylistScreenState extends State<PlaylistScreen> {
+  late Playlist playlist;
+
+  @override
+  void initState() {
+    super.initState();
+    playlist = Get.arguments ?? Playlist.getPlaylistsFromFirestore();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Playlist>>(
+      future: Playlist.getPlaylistsFromFirestore(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.deepPurple.shade800.withOpacity(0.8),
+                  Colors.deepPurple.shade200.withOpacity(0.8),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: const Text('Playlist'),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      _PlaylistInformation(playlist: playlist),
+                      const _PlayOrShuffleSwitch(),
+                      _PlaylistSongs(playlist: playlist),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

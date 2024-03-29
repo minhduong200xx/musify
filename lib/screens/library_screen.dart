@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../provider/favorite_provider.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,6 @@ import '../models/song_model.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Consumer<FavoriteSongsProvider>(
@@ -59,6 +59,7 @@ class _HeaderLibraryState extends State<_HeaderLibrary> {
   };
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return Container(
       child: Column(
         children: [
@@ -76,10 +77,12 @@ class _HeaderLibraryState extends State<_HeaderLibrary> {
                     width: 10,
                   ),
                   Text(
-                    'Your Library',
+                    user != null
+                        ? '${user.email}' "'s Library"
+                        : 'Please Sign in to view Your library',
                     style: TextStyle(
                         fontSize: 18,
-                        color: Colors.white,
+                        color: user != null ? Colors.white : Colors.yellow,
                         fontWeight: FontWeight.w500),
                   ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class FavoriteSong extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<_DiscoverLoveMusicState> _discoverLoveMusicKey =
         GlobalKey<_DiscoverLoveMusicState>();
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -32,94 +34,102 @@ class FavoriteSong extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Consumer<FavoriteSongsProvider>(
+          child: Column(
+            children: [
+              Consumer<FavoriteSongsProvider>(
+                builder: (context, favoriteProvider, _) {
+                  final favoriteSongs = favoriteProvider.favoriteSongs.toList();
+                  return _DiscoverLoveMusic(
+                    key: _discoverLoveMusicKey,
+                    favoriteSongs: favoriteSongs,
+                    favoriteProvider: favoriteProvider,
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              const _PlayOrShuffleSwitch(),
+              const SizedBox(height: 10),
+              Expanded(
+                child: Consumer<FavoriteSongsProvider>(
                   builder: (context, favoriteProvider, _) {
-                    final favoriteSongs =
-                        favoriteProvider.favoriteSongs.toList();
-                    return _DiscoverLoveMusic(
-                      key: _discoverLoveMusicKey,
-                      favoriteSongs: favoriteSongs,
-                      favoriteProvider: favoriteProvider,
-                    );
-                  },
-                ),
-                const SizedBox(height: 10),
-                const _PlayOrShuffleSwitch(),
-                const SizedBox(height: 10),
-                Consumer<FavoriteSongsProvider>(
-                  builder: (context, favoriteProvider, _) {
-                    final favoriteSongs =
-                        favoriteProvider.favoriteSongs.toList();
+                    final user = FirebaseAuth.instance.currentUser;
+                    FirebaseAuth.instance
+                        .authStateChanges()
+                        .listen((User? user) {
+                      if (user == null) {
+                      } else {
+                        favoriteProvider.fetchFavoriteSongs(user.uid);
+                      }
+                    });
+                    final favoriteSongs = user != null
+                        ? favoriteProvider.favoriteSongs.toList()
+                        : null;
                     return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: favoriteSongs.length,
+                      itemCount:
+                          favoriteSongs != null ? favoriteSongs.length : 0,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            ListTile(
-                              tileColor: Colors.grey[200],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(color: Colors.grey),
-                              ),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.network(
-                                  favoriteSongs[index].coverImageUrl,
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              title: Text(
-                                favoriteSongs[index].title.length > 10
-                                    ? '${favoriteSongs[index].title.substring(0, 12)}...'
-                                    : favoriteSongs[index].title,
-                                // Giữ cho chỉ có một dòng được hiển thị
-                                maxLines: 1,
-                                // Không cho phép văn bản vượt qua khung hình
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(favoriteSongs[index].singer),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.favorite,
-                                      color: Colors.deepPurple,
+                            favoriteSongs != null
+                                ? ListTile(
+                                    tileColor: Colors.grey[200],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side:
+                                          const BorderSide(color: Colors.grey),
                                     ),
-                                    onPressed: () {
-                                      Provider.of<FavoriteSongsProvider>(
-                                        context,
-                                        listen: false,
-                                      ).removeFromFavorites(
-                                        favoriteSongs[index],
-                                        userId,
-                                      );
-
-                                      final _discoverLoveMusicState =
-                                          _discoverLoveMusicKey.currentState;
-                                      if (_discoverLoveMusicState != null) {
-                                        _discoverLoveMusicState
-                                            ._updateFilteredSongs();
-                                      }
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.play_circle,
-                                        size: 30, color: Colors.deepPurple),
-                                    onPressed: () {
-                                      Get.toNamed('/song',
-                                          arguments: favoriteSongs[index]);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Image.network(
+                                        favoriteSongs[index].coverImageUrl,
+                                        height: 50,
+                                        width: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    title: Text(favoriteSongs[index].title),
+                                    subtitle: Text(favoriteSongs[index].singer),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.favorite,
+                                            color: Colors.deepPurple,
+                                          ),
+                                          onPressed: () {
+                                            Provider.of<FavoriteSongsProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .toggleFavorite(
+                                              favoriteSongs[index],
+                                              userId,
+                                            );
+                                            _DiscoverLoveMusicState?
+                                                _discoverLoveMusicState =
+                                                _discoverLoveMusicKey
+                                                    .currentState;
+                                            if (_discoverLoveMusicState !=
+                                                null) {
+                                              _discoverLoveMusicState
+                                                  ._updateFilteredSongs();
+                                            }
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.play_circle,
+                                              size: 30,
+                                              color: Colors.deepPurple),
+                                          onPressed: () {
+                                            Get.toNamed('/song',
+                                                arguments:
+                                                    favoriteSongs[index]);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Text("No favorite songs founded"),
                             const SizedBox(height: 10),
                           ],
                         );
@@ -127,8 +137,8 @@ class FavoriteSong extends StatelessWidget {
                     );
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -175,7 +185,6 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
 
   void _updateFilteredSongs() {
     setState(() {
-      // Gán danh sách bài hát yêu thích bằng danh sách mới từ favoriteProvider.filteredSongs
       _filteredSongs = widget.favoriteProvider.filteredSongs.toList();
     });
   }
@@ -304,14 +313,14 @@ class _DiscoverLoveMusicState extends State<_DiscoverLoveMusic> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Liked songs',
+            'Bài hát ưa thích',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
           ),
           Text(
-            '${_filteredSongs.length} songs',
+            '${_filteredSongs.length} bài hát',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.white,
                 ),

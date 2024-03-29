@@ -65,15 +65,16 @@ class FavoriteSongsProvider extends ChangeNotifier {
 
   void removeFromFavorites(Song song, String userId) async {
     try {
-      _favoriteSongs.remove(song); // Xóa bài hát khỏi danh sách yêu thích
-      _filteredSongs.remove(song); // Xóa bài hát khỏi danh sách lọc
-      await firestore
+      final songRef = firestore
           .collection('favorites')
           .doc(userId)
           .collection('songs')
-          .doc(song.id)
-          .delete();
-      notifyListeners(); // Thông báo cho người nghe rằng danh sách đã thay đổi
+          .doc(song.id);
+
+      _favoriteSongs.remove(song);
+      await songRef.delete();
+      _applyFilter("");
+      notifyListeners();
     } catch (e) {
       print('Error removing favorite song: $e');
     }

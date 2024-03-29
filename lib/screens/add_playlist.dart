@@ -19,62 +19,31 @@ class AddToPlaylistScreen extends StatelessWidget {
           ],
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(
-            'Add to Playlist',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true, // Đặt true để căn giữa tiêu đề
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/images/liked-songs-64.png',
-                    height: 60,
-                    width: 60,
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Liked Songs',
-                        style: TextStyle(color: Colors.white, fontSize: 18.0),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Playlist',
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 14.0),
-                          ),
-                          const SizedBox(width: 5),
-                          const Icon(Icons.circle, size: 4),
-                          const SizedBox(width: 5),
-                          Text('29 tracks',
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 14.0))
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
+      child: FutureBuilder<List<Playlist>>(
+        future: Playlist.getPlaylistsFromFirestore(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No playlists available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final playlist = snapshot.data![index];
+                return ListTile(
+                  title: Text(playlist.title),
+                  onTap: () {
+                    // Add song to the selected playlist
+                    // addToPlaylist(context, playlist);
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }

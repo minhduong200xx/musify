@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app_ui/provider/favorite_provider.dart';
@@ -18,8 +19,9 @@ class SongScreen extends StatefulWidget {
 
 class _SongScreenState extends State<SongScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
-  Song song = Get.arguments ?? fetchSongs();
+  Song song = Get.arguments;
   bool isFavorite = false;
+  bool isShuffle = false;
   bool isRepeatOne = false;
   FavoriteSongsProvider _favoriteSongsProvider = FavoriteSongsProvider();
   late String userId;
@@ -181,6 +183,7 @@ class _SongScreenState extends State<SongScreen> {
                 audioPlayer: audioPlayer,
                 isFavorite: isFavorite,
                 isRepeatOne: isRepeatOne,
+                isShuffle: isShuffle,
                 onFavoritePressed: () {
                   _favoriteSongsProvider.toggleFavorite(song, userId);
                 },
@@ -192,6 +195,7 @@ class _SongScreenState extends State<SongScreen> {
                   audioPlayer
                       .setLoopMode(isRepeatOne ? LoopMode.one : LoopMode.off);
                 },
+                onShufflePressed: () async {},
               ),
             if (showLyric) _ShowLyric(),
           ],
@@ -209,8 +213,10 @@ class _MusicPlayer extends StatelessWidget {
     required this.audioPlayer,
     required this.isFavorite,
     required this.isRepeatOne,
+    required this.isShuffle,
     required this.onFavoritePressed,
     required this.onRepeatPressed,
+    required this.onShufflePressed,
   })  : _seekBarDataStream = seekBarDataStream,
         super(key: key);
 
@@ -219,8 +225,39 @@ class _MusicPlayer extends StatelessWidget {
   final AudioPlayer audioPlayer;
   final bool isFavorite;
   final bool isRepeatOne;
+  final bool isShuffle;
   final VoidCallback onFavoritePressed;
   final VoidCallback onRepeatPressed;
+  final VoidCallback onShufflePressed;
+  void goToRandomSong() async {
+    final randomSong = await getRandomSong();
+    if (randomSong != null) {
+      Get.offAndToNamed('song', arguments: randomSong);
+    } else {
+      // Handle the case when there is no next song
+      print('No random song available.');
+    }
+  }
+
+  void goToNextSong() async {
+    final nextSong = await getNextSong(song.id);
+    if (nextSong != null) {
+      Get.offAndToNamed('song', arguments: nextSong);
+    } else {
+      // Handle the case when there is no next song
+      print('No next song available.');
+    }
+  }
+
+  void goToPreviousSong() async {
+    final previousSong = await getPreviousSong(song.id);
+    if (previousSong != null) {
+      Get.offAndToNamed('/song', arguments: previousSong);
+    } else {
+      // Handle the case when there is no next song
+      print('No previous song available.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -294,13 +331,34 @@ class _MusicPlayer extends StatelessWidget {
           ),
           Row(
             children: [
-              const Icon(
-                Icons.shuffle,
-                color: Colors.white,
-                size: 30,
+              GestureDetector(
+                onTap: goToRandomSong,
+                child: Icon(
+                  isShuffle ? Icons.shuffle_outlined : Icons.shuffle,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: goToPreviousSong,
+                child: Icon(
+                  Icons.arrow_left,
+                  size: 60,
+                  color: Colors.white,
+                ),
               ),
               const Spacer(),
               PlayerButtons(audioPlayer: audioPlayer),
+              const Spacer(),
+              GestureDetector(
+                onTap: goToNextSong,
+                child: Icon(
+                  Icons.arrow_right,
+                  size: 60,
+                  color: Colors.white,
+                ),
+              ),
               const Spacer(),
               GestureDetector(
                 onTap: onRepeatPressed,

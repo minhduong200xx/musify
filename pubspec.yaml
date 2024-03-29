@@ -43,16 +43,22 @@ dependencies:
   firebase_core: ^2.27.1
   firebase_analytics: ^10.8.10
   firebase_auth: ^4.17.9
-  audioplayers: ^6.0.0
+  audioplayers: ^5.2.1
   cloud_firestore: ^4.15.10
   google_sign_in: ^6.2.1
   flutter_facebook_auth: ^6.1.1
   firebase_storage: ^11.6.11
   path_provider: ^2.1.2
+  bottom_navbar_player: ^0.1.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+dependency_overrides:
+  firebase_storage_web: ^3.8.1 # Override to a version compatible with Flutter from SDK
+  web: ^0.5.1 # Override to a version compatible with firebase_storage_web
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

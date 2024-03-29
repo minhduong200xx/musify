@@ -96,6 +96,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/auth', page: () => const ArtistScreen()),
         GetPage(name: '/library', page: () => const LibraryScreen()),
+        
       ],
     );
   }

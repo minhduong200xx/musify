@@ -14,24 +14,19 @@ class PlayerButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        StreamBuilder<SequenceState?>(
-          stream: audioPlayer.sequenceStateStream,
-          builder: (context, index) {
-            return IconButton(
-              onPressed: audioPlayer.hasPrevious
-                  ? audioPlayer.seekToPrevious
-                  : () {
-                      audioPlayer.seek(Duration.zero,
-                          index: audioPlayer.effectiveIndices!.first);
-                    },
-              iconSize: 45,
-              icon: const Icon(
-                Icons.skip_previous,
-                color: Colors.white,
-              ),
-            );
-          },
-        ),
+        // StreamBuilder<SequenceState?>(
+        //   stream: audioPlayer.sequenceStateStream,
+        //   builder: (context, index) {
+        //     return IconButton(
+        //       onPressed: audioPlayer.seekToPrevious,
+        //       iconSize: 75,
+        //       icon: const Icon(
+        //         Icons.arrow_left,
+        //         color: Colors.white,
+        //       ),
+        //     );
+        //   },
+        // ),
         StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,
           builder: (context, snapshot) {
@@ -83,19 +78,19 @@ class PlayerButtons extends StatelessWidget {
             }
           },
         ),
-        StreamBuilder<SequenceState?>(
-          stream: audioPlayer.sequenceStateStream,
-          builder: (context, index) {
-            return IconButton(
-              onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
-              iconSize: 45,
-              icon: const Icon(
-                Icons.skip_next,
-                color: Colors.white,
-              ),
-            );
-          },
-        ),
+        // StreamBuilder<SequenceState?>(
+        //   stream: audioPlayer.sequenceStateStream,
+        //   builder: (context, index) {
+        //     return IconButton(
+        //       onPressed: audioPlayer.seekToNext(so),
+        //       iconSize: 75,
+        //       icon: const Icon(
+        //         Icons.arrow_right,
+        //         color: Colors.white,
+        //       ),
+        //     );
+        //   },
+        // ),
       ],
     );
   }
