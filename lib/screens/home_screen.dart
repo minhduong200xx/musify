@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app_ui/screens/all_play_list.dart';
+import 'package:flutter_music_app_ui/screens/all_songs_screen.dart';
 import 'package:flutter_music_app_ui/screens/now_playing_bar.dart';
 import 'package:flutter_music_app_ui/screens/screens.dart';
 import 'package:flutter_music_app_ui/widgets/my_drawer.dart';
@@ -12,6 +14,12 @@ import '../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+  void _navigateToAllSongs(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AllSongsScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +98,19 @@ class _PlaylistMusic extends StatelessWidget {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          const SectionHeader(title: 'Playlists'),
+          SectionHeader(
+            title: 'Playlists',
+            action: 'View All',
+            onViewMorePressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AllPlaylistScreen(
+                          playlists: playlists,
+                        )),
+              );
+            },
+          ),
           ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 20),
@@ -124,9 +144,18 @@ class _TrendingMusic extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: SectionHeader(title: 'Trending Music'),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: SectionHeader(
+              title: 'Trending Music',
+              action: 'View All',
+              onViewMorePressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AllSongsScreen()),
+                );
+              },
+            ),
           ),
           const SizedBox(height: 20),
           SizedBox(
