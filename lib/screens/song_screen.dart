@@ -35,13 +35,13 @@ class _SongScreenState extends State<SongScreen> {
         Provider.of<FavoriteSongsProvider>(context, listen: false);
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     audioPlayer.setUrl('${song.audioUrl}');
-    tag: MediaItem(
-    // Specify a unique ID for each media item:
-    id: '${song.id}',
-    // Metadata to display in the notification:
-    title: '${song.title}',
-    // artUri: Uri('${song.coverImageUrl}'),
-  );
+  //   tag: MediaItem(
+  //   // Specify a unique ID for each media item:
+  //   id: '${song.id}',
+  //   // Metadata to display in the notification:
+  //   title: '${song.title}',
+  //   // artUri: Uri('${song.coverImageUrl}'),
+  // );
   }
 
   @override
