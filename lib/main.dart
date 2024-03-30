@@ -22,11 +22,11 @@ Future<void> main() async {
           messagingSenderId: "",
           projectId: "musifyapp-cbe22"));
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9005);
-  // await JustAudioBackground.init(
-  //   androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-  //   androidNotificationChannelName: 'Audio playback',
-  //   androidNotificationOngoing: true,
-  // );
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   runApp(
     MultiProvider(
       providers: [
