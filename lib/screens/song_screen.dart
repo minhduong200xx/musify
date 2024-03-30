@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:musify/provider/favorite_provider.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -34,6 +35,13 @@ class _SongScreenState extends State<SongScreen> {
         Provider.of<FavoriteSongsProvider>(context, listen: false);
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     audioPlayer.setUrl('${song.audioUrl}');
+    tag: MediaItem(
+    // Specify a unique ID for each media item:
+    id: '${song.id}',
+    // Metadata to display in the notification:
+    title: '${song.title}',
+    // artUri: Uri('${song.coverImageUrl}'),
+  );
   }
 
   @override

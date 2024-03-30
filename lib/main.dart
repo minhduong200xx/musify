@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:musify/provider/provider_auth_follow.dart';
 import 'package:musify/screens/artist_screen.dart';
 import 'package:musify/screens/favorite_screen.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:musify/screens/library_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:app_settings/app_settings.dart';
 
 
 Future<void> main() async {
@@ -21,6 +23,11 @@ Future<void> main() async {
           messagingSenderId: "",
           projectId: "musifyapp-cbe22"));
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9005);
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   runApp(
     MultiProvider(
       providers: [
@@ -68,6 +75,13 @@ Future<void> main() async {
     final uid = user.uid;
   }
 }
+
+// Widget build(BuildContext context) {
+//   return ElevatedButton(
+//     onPressed: () => AppSettings.openAppSettings(type: AppSettingsType.notification),
+//     child: const Text('Open Notification Settings'),
+//   );
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
