@@ -1,16 +1,34 @@
 # musify
 
-A new Flutter project.
+A Flutter music app
 
-## Getting Started
+Some screenshots: ![image](https://github.com/minhduong200xx/musify/assets/90366967/64385983-ff17-4f00-b4d6-5f744befdafb)
+![image](https://github.com/minhduong200xx/musify/assets/90366967/77de10c8-70e2-4340-b3b6-9a6b651e09e5)
+![image](https://github.com/minhduong200xx/musify/assets/90366967/f372738c-33f2-40a4-84e4-56fb50950f68)
 
-This project is a starting point for a Flutter application.
+Requirement:
+flutter sdk: ">=2.17.1 <3.0.0"
+dart
 
-A few resources to get you started if this is your first Flutter project:
+How to run: 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+git clone github.com/minhduong200xx/musify
+```
+After installed, go into your workspace and run:
+```
+flutter pub get
+```
+or 
+```
+flutter pub outdated
+```
+Last, run:
+```
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+
+
