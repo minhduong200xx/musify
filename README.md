@@ -26,6 +26,7 @@ Playlist screen:
 
 
 Requirement:
+
 flutter sdk: ">=2.17.1 <3.0.0"
 
 dart
@@ -33,7 +34,7 @@ dart
 How to run: 
 
 ```
-git clone github.com/minhduong200xx/musify
+git clone https://github.com/minhduong200xx/musify.git
 ```
 After installed, go into your workspace and run:
 ```
