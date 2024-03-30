@@ -13,7 +13,6 @@ import 'package:musify/screens/library_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:app_settings/app_settings.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
